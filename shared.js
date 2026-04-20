@@ -153,6 +153,12 @@ window.CARRITO = {
         };
 
         if (totalEl) totalEl.textContent = this.getTotal().toFixed(2);
+
+        // NUEVO: Abrir newsletter solo al entrar al carro
+        var newsletterModal = document.getElementById('newsletterModal');
+        if (newsletterModal) {
+            newsletterModal.classList.add('active');
+        }
     }
 };
 
