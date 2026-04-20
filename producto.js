@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         var html = '';
         results.forEach(function(p) {
-            html += '<a href="/producto.html?id=' + p.id + '" class="search-result-item">' +
+            html += '<a href="producto.html?id=' + p.id + '" class="search-result-item">' +
                 '<img src="' + p.imagen + '" alt="' + p.nombre + '" class="search-result-img">' +
                 '<div class="search-result-info"><div class="search-result-name">' + p.nombre + '</div>' +
                 '<div class="search-result-cat">' + p.categoria + '</div></div>' +
