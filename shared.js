@@ -458,13 +458,14 @@ window.initSharedUI = function() {
             CARRITO.renderModal();
         });
     }
+}; // <--- ESTA LLAVE CIERRA EL initSharedUI
 
-    // ========== NEWSLETTER FUNCIONAL CON EMAILJS ==========
-    document.addEventListener('DOMContentLoaded', function() {
+// AHORA LAS FUNCIONES FUERA, AL FINAL DEL ARCHIVO:
+
+document.addEventListener('DOMContentLoaded', function() {
     if (window.initSharedUI) initSharedUI();
 });
 
-    // FORZAR FUNCIÓN GLOBAL
 window.enviarNewsletter = function() {
     console.log("¡Cuervo mensajero activado!");
     
@@ -492,4 +493,3 @@ window.enviarNewsletter = function() {
         console.error("Fallo EmailJS:", err);
     });
 };
-}
