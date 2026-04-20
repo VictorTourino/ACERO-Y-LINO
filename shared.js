@@ -1,0 +1,463 @@
+// ========== CARRITO DE LA COMPRA ==========
+window.CARRITO = {
+    getItems: function() {
+        try {
+            var items = JSON.parse(sessionStorage.getItem('aceroylino_cart') || '[]');
+            return Array.isArray(items) ? items : [];
+        } catch(e) { return []; }
+    },
+
+    saveItems: function(items) {
+        sessionStorage.setItem('aceroylino_cart', JSON.stringify(items));
+        this.updateBadge();
+    },
+
+    addItem: function(productId, cantidad) {
+        cantidad = cantidad || 1;
+        var items = this.getItems();
+        var existing = null;
+        for (var i = 0; i < items.length; i++) {
+            if (items[i].id === productId) { existing = items[i]; break; }
+        }
+        if (existing) {
+            existing.cantidad += cantidad;
+        } else {
+            items.push({ id: productId, cantidad: cantidad });
+        }
+        this.saveItems(items);
+        this.showNotification('Producto anadido al carrito');
+    },
+
+    removeItem: function(productId) {
+        var items = this.getItems().filter(function(item) { return item.id !== productId; });
+        this.saveItems(items);
+    },
+
+    updateQuantity: function(productId, cantidad) {
+        var items = this.getItems();
+        for (var i = 0; i < items.length; i++) {
+            if (items[i].id === productId) {
+                if (cantidad <= 0) { items.splice(i, 1); }
+                else { items[i].cantidad = cantidad; }
+                break;
+            }
+        }
+        this.saveItems(items);
+    },
+
+    getTotal: function() {
+        var items = this.getItems();
+        var total = 0;
+        if (!window.PRODUCTOS) return 0;
+        items.forEach(function(item) {
+            var prod = window.PRODUCTOS.find(function(p) { return p.id === item.id; });
+            if (prod) total += prod.precio * item.cantidad;
+        });
+        return total;
+    },
+
+    getCount: function() {
+        var items = this.getItems();
+        var count = 0;
+        items.forEach(function(item) { count += item.cantidad; });
+        return count;
+    },
+
+    clear: function() {
+        sessionStorage.removeItem('aceroylino_cart');
+        this.updateBadge();
+    },
+
+    updateBadge: function() {
+        var badge = document.getElementById('cartBadge');
+        var count = this.getCount();
+        if (badge) {
+            badge.textContent = count;
+            badge.style.display = count > 0 ? 'flex' : 'none';
+        }
+    },
+
+    showNotification: function(msg) {
+        var existing = document.querySelector('.cart-notification');
+        if (existing) existing.remove();
+        var notif = document.createElement('div');
+        notif.className = 'cart-notification';
+        notif.textContent = msg;
+        document.body.appendChild(notif);
+        setTimeout(function() { notif.classList.add('show'); }, 10);
+        setTimeout(function() {
+            notif.classList.remove('show');
+            setTimeout(function() { notif.remove(); }, 300);
+        }, 2000);
+    },
+
+    renderModal: function() {
+        var container = document.getElementById('cartItems');
+        var totalEl = document.getElementById('cartTotal');
+        var emptyMsg = document.getElementById('cartEmpty');
+        var cartActions = document.getElementById('cartActions');
+        if (!container) return;
+        
+        var items = this.getItems();
+        container.innerHTML = '';
+
+        if (items.length === 0) {
+            if (emptyMsg) emptyMsg.style.display = 'block';
+            if (cartActions) cartActions.style.display = 'none';
+            if (totalEl) totalEl.textContent = '0';
+            return;
+        }
+
+        if (emptyMsg) emptyMsg.style.display = 'none';
+        if (cartActions) cartActions.style.display = 'block';
+
+        var self = this;
+        items.forEach(function(item) {
+            if (!window.PRODUCTOS) return;
+            var prod = window.PRODUCTOS.find(function(p) { return p.id === item.id; });
+            if (!prod) return;
+
+            var row = document.createElement('div');
+            row.className = 'cart-item';
+            row.innerHTML = 
+                '<img src="' + prod.imagen + '" alt="' + prod.nombre + '" class="cart-item-img">' +
+                '<div class="cart-item-info">' +
+                    '<div class="cart-item-name">' + prod.nombre + '</div>' +
+                    '<div class="cart-item-price">' + prod.precio + ' &euro;</div>' +
+                '</div>' +
+                '<div class="cart-item-controls">' +
+                    '<button class="cart-qty-btn" data-action="minus" data-id="' + prod.id + '">-</button>' +
+                    '<span class="cart-qty">' + item.cantidad + '</span>' +
+                    '<button class="cart-qty-btn" data-action="plus" data-id="' + prod.id + '">+</button>' +
+                    '<button class="cart-remove-btn" data-id="' + prod.id + '">&times;</button>' +
+                '</div>';
+            container.appendChild(row);
+        });
+
+        container.onclick = function(e) {
+            var btn = e.target.closest('[data-id]');
+            if (!btn) return;
+            var id = parseInt(btn.getAttribute('data-id'));
+            if (btn.classList.contains('cart-remove-btn')) {
+                self.removeItem(id);
+                self.renderModal();
+            } else if (btn.getAttribute('data-action') === 'minus') {
+                var current = self.getItems().find(function(i) { return i.id === id; });
+                if (current) self.updateQuantity(id, current.cantidad - 1);
+                self.renderModal();
+            } else if (btn.getAttribute('data-action') === 'plus') {
+                var current2 = self.getItems().find(function(i) { return i.id === id; });
+                if (current2) self.updateQuantity(id, current2.cantidad + 1);
+                self.renderModal();
+            }
+        };
+
+        if (totalEl) totalEl.textContent = this.getTotal().toFixed(2);
+    }
+};
+
+// ========== SHARED PAGE INITIALIZATION ==========
+window.initSharedUI = function() {
+    var dropdownMenu = document.getElementById('dropdownMenu');
+    var goldLine = document.getElementById('goldLine');
+    var hamburger = document.getElementById('hamburger');
+    var searchModal = document.getElementById('searchModal');
+    var searchInput = document.getElementById('searchInput');
+    var searchResults = document.getElementById('searchResults');
+    var loginModal = document.getElementById('loginModal');
+    var cartModal = document.getElementById('cartModal');
+    var newsletterModal = document.getElementById('newsletterModal');
+    var menuOpen = false;
+    var searchDebounceTimer = null;
+
+    // ========== HAMBURGER MENU ==========
+    if (hamburger) {
+        hamburger.addEventListener('click', function(e) {
+            e.stopPropagation();
+            menuOpen = !menuOpen;
+            if (menuOpen) {
+                dropdownMenu.classList.add('active');
+                goldLine.classList.add('active');
+            } else {
+                dropdownMenu.classList.remove('active');
+                goldLine.classList.remove('active');
+            }
+        });
+    }
+
+    document.addEventListener('click', function(e) {
+        if (menuOpen && dropdownMenu && !dropdownMenu.contains(e.target) && !hamburger.contains(e.target)) {
+            menuOpen = false;
+            dropdownMenu.classList.remove('active');
+            goldLine.classList.remove('active');
+        }
+    });
+
+    // ========== SEARCH MODAL ==========
+    var searchBtn = document.getElementById('searchBtn');
+    var searchClose = document.getElementById('searchClose');
+
+    if (searchBtn) {
+        searchBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (searchModal) searchModal.classList.add('active');
+            setTimeout(function() { if (searchInput) searchInput.focus(); }, 100);
+        });
+    }
+
+    if (searchClose) {
+        searchClose.addEventListener('click', function() {
+            if (searchModal) searchModal.classList.remove('active');
+            if (searchInput) searchInput.value = '';
+            if (searchResults) searchResults.innerHTML = '';
+        });
+    }
+
+    if (searchModal) {
+        searchModal.addEventListener('click', function(e) {
+            if (e.target === searchModal) {
+                searchModal.classList.remove('active');
+                if (searchInput) searchInput.value = '';
+                if (searchResults) searchResults.innerHTML = '';
+            }
+        });
+    }
+
+    function performSearch(query) {
+        if (!searchResults || !window.PRODUCTOS) return;
+        var trimmed = query.trim().toLowerCase();
+        if (trimmed.length === 0) { searchResults.innerHTML = ''; return; }
+        var terms = trimmed.split(/\s+/);
+        var results = window.PRODUCTOS.filter(function(p) {
+            var searchable = (p.nombre + ' ' + p.descripcion + ' ' + p.categoria).toLowerCase();
+            return terms.every(function(term) { return searchable.indexOf(term) !== -1; });
+        });
+        if (results.length === 0) {
+            searchResults.innerHTML = '<div class="search-no-results">No se encontraron productos para "' + query.trim() + '"</div>';
+            return;
+        }
+        var html = '';
+        results.forEach(function(p) {
+            html += '<a href="/producto.html?id=' + p.id + '" class="search-result-item">' +
+                '<img src="' + p.imagen + '" alt="' + p.nombre + '" class="search-result-img">' +
+                '<div class="search-result-info"><div class="search-result-name">' + p.nombre + '</div>' +
+                '<div class="search-result-cat">' + p.categoria + '</div></div>' +
+                '<div class="search-result-price">' + p.precio + ' &euro;</div></a>';
+        });
+        searchResults.innerHTML = html;
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchDebounceTimer);
+            var query = searchInput.value;
+            searchDebounceTimer = setTimeout(function() { performSearch(query); }, 200);
+        });
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                if (searchModal) searchModal.classList.remove('active');
+                searchInput.value = '';
+                if (searchResults) searchResults.innerHTML = '';
+            }
+        });
+    }
+
+    // ========== LOGIN / SESSION ==========
+    var userBtn = document.getElementById('userBtn');
+    var loginClose = document.getElementById('loginClose');
+    var loginSubmit = document.getElementById('loginSubmit');
+    var loginEmail = document.getElementById('loginEmail');
+    var loginPassword = document.getElementById('loginPassword');
+    var loginError = document.getElementById('loginError');
+    var loginForm = document.getElementById('loginForm');
+    var userInfo = document.getElementById('userInfo');
+    var logoutBtn = document.getElementById('logoutBtn');
+    var welcomeText = document.getElementById('welcomeText');
+
+    function checkSession() {
+        var session = sessionStorage.getItem('aceroylino_user');
+        if (session) {
+            try {
+                var user = JSON.parse(session);
+                if (user && user.email) { showLoggedIn(user.email); return true; }
+            } catch(e) { sessionStorage.removeItem('aceroylino_user'); }
+        }
+        showLoggedOut();
+        return false;
+    }
+
+    function showLoggedIn(email) {
+        if (loginForm) loginForm.style.display = 'none';
+        if (userInfo) userInfo.style.display = 'block';
+        if (welcomeText) welcomeText.textContent = 'Bienvenido, ' + email;
+        if (userBtn) userBtn.classList.add('user-logged');
+    }
+
+    function showLoggedOut() {
+        if (loginForm) loginForm.style.display = 'block';
+        if (userInfo) userInfo.style.display = 'none';
+        if (userBtn) userBtn.classList.remove('user-logged');
+        if (loginEmail) loginEmail.value = '';
+        if (loginPassword) loginPassword.value = '';
+        if (loginError) loginError.textContent = '';
+    }
+
+    checkSession();
+
+    if (userBtn) {
+        userBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            checkSession();
+            if (loginModal) loginModal.classList.add('active');
+        });
+    }
+
+    if (loginClose) {
+        loginClose.addEventListener('click', function() { if (loginModal) loginModal.classList.remove('active'); });
+    }
+
+    if (loginModal) {
+        loginModal.addEventListener('click', function(e) {
+            if (e.target === loginModal) loginModal.classList.remove('active');
+        });
+    }
+
+    if (loginSubmit) {
+        loginSubmit.addEventListener('click', function() {
+            var email = loginEmail ? loginEmail.value.trim() : '';
+            var password = loginPassword ? loginPassword.value.trim() : '';
+            if (!email || !password) { if (loginError) loginError.textContent = 'Por favor, rellena todos los campos.'; return; }
+            if (email.indexOf('@') === -1 || email.indexOf('.') === -1) { if (loginError) loginError.textContent = 'Introduce un email valido.'; return; }
+            sessionStorage.setItem('aceroylino_user', JSON.stringify({ email: email, loggedIn: true }));
+            showLoggedIn(email);
+        });
+    }
+
+    if (loginPassword) {
+        loginPassword.addEventListener('keypress', function(e) { if (e.key === 'Enter' && loginSubmit) loginSubmit.click(); });
+    }
+
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function() {
+            sessionStorage.removeItem('aceroylino_user');
+            showLoggedOut();
+        });
+    }
+
+    // ========== FOOTER "MI CUENTA" LINK ==========
+    var footerMiCuenta = document.getElementById('footerMiCuenta');
+    if (footerMiCuenta) {
+        footerMiCuenta.addEventListener('click', function(e) {
+            e.preventDefault();
+            checkSession();
+            if (loginModal) loginModal.classList.add('active');
+        });
+    }
+
+    // ========== CART MODAL ==========
+    var cartBtn = document.getElementById('cartBtn');
+    var cartClose = document.getElementById('cartClose');
+    var clearCartBtn = document.getElementById('clearCartBtn');
+
+    if (cartBtn) {
+        cartBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (cartModal) {
+                CARRITO.renderModal();
+                cartModal.classList.add('active');
+            }
+        });
+    }
+
+    if (cartClose) {
+        cartClose.addEventListener('click', function() { if (cartModal) cartModal.classList.remove('active'); });
+    }
+
+    if (cartModal) {
+        cartModal.addEventListener('click', function(e) {
+            if (e.target === cartModal) cartModal.classList.remove('active');
+        });
+    }
+
+    if (clearCartBtn) {
+        clearCartBtn.addEventListener('click', function() {
+            CARRITO.clear();
+            CARRITO.renderModal();
+        });
+    }
+
+    // ========== NEWSLETTER FUNCIONAL CON EMAILJS ==========
+    var newsletterLinks = document.querySelectorAll('[data-action="newsletter"]');
+    var newsletterClose = document.getElementById('newsletterClose');
+    var newsletterSubmit = document.getElementById('newsletterSubmit');
+    var newsletterModal = document.getElementById('newsletterModal');
+
+    // Abrir el modal desde cualquier enlace (header o footer)
+    newsletterLinks.forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (newsletterModal) newsletterModal.classList.add('active');
+        });
+    });
+
+    // Cerrar el modal con la X
+    if (newsletterClose) {
+        newsletterClose.addEventListener('click', function() { 
+            if (newsletterModal) newsletterModal.classList.remove('active'); 
+        });
+    }
+
+    // Lógica de envío al pulsar SUSCRIBIRSE
+    if (newsletterSubmit) {
+        newsletterSubmit.addEventListener('click', function() {
+            var emailInput = document.getElementById('newsletterEmail');
+            var msg = document.getElementById('newsletterMsg');
+            var emailValue = emailInput ? emailInput.value.trim() : '';
+
+            // 1. Validación
+            if (!emailValue || emailValue.indexOf('@') === -1) {
+                if (msg) { 
+                    msg.textContent = 'Introduce un email valido.'; 
+                    msg.style.color = '#cc0000'; 
+                }
+                return;
+            }
+
+            // 2. Feedback visual (Dorado)
+            if (msg) { 
+                msg.textContent = 'Enviando cuervo mensajero...'; 
+                msg.style.color = '#b8860b'; 
+            }
+
+            // 3. Envío con tus credenciales
+            var serviceID = 'service_spleogq';
+            var templateID = 'template_ntkeve4';
+            var templateParams = {
+                user_email: emailValue,
+                reply_to: "info@aceroylino.com"
+            };
+
+            emailjs.send(serviceID, templateID, templateParams)
+                .then(function() {
+                    // Éxito: Usamos la notificación visual de abajo a la derecha que te gustó
+                    if (window.CARRITO && window.CARRITO.showNotification) {
+                        window.CARRITO.showNotification('¡Te has suscrito correctamente!');
+                    }
+                    
+                    // Limpiar y cerrar tras 1 segundo para que de tiempo a ver que ha funcionado
+                    setTimeout(function() {
+                        if (emailInput) emailInput.value = '';
+                        if (msg) msg.textContent = '';
+                        if (newsletterModal) newsletterModal.classList.remove('active');
+                    }, 1000);
+
+                }, function(error) {
+                    console.error("Error EmailJS:", error);
+                    if (msg) { 
+                        msg.textContent = 'Error en el envío. Reintenta.'; 
+                        msg.style.color = '#cc0000'; 
+                    }
+                });
+        });
+    }
+}
