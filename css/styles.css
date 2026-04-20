@@ -1316,15 +1316,16 @@ footer {
     background: transparent;
 }
 
-/* ========== AJUSTES PARA CARRUSEL ARRASTRABLE ========== */
+/* ========== AJUSTES FINALES: CARRUSEL Y CASTILLO ========== */
 .carousel-wrapper {
     overflow: hidden;
     cursor: grab;
-    user-select: none; /* Evita que se seleccione texto al arrastrar */
+    user-select: none;
+    position: relative;
 }
 
 .carousel-wrapper .products {
-    display: flex !important;   /* Forzamos fila en lugar de cuadrícula */
+    display: flex !important;   /* Forzamos fila */
     flex-wrap: nowrap !important;
     gap: 20px;
     overflow-x: auto;
@@ -1333,24 +1334,32 @@ footer {
     -webkit-overflow-scrolling: touch;
 }
 
-/* Ocultar barra de scroll para estética medieval */
+/* IMPORTANTE: Esto hace que los productos no salgan con ancho 0 */
+.carousel-wrapper .product-card {
+    min-width: 250px !important; 
+    flex: 0 0 auto !important;
+    display: block !important;
+}
+
+/* Ocultar barra de scroll */
 .carousel-wrapper .products::-webkit-scrollbar {
     display: none;
 }
-
 .carousel-wrapper .products {
     -ms-overflow-style: none;  
     scrollbar-width: none;  
 }
 
-/* El Castillo del Footer */
+/* El Castillo del Footer - AHORA A LA DERECHA */
 .footer-castle {
-    text-align: left;
-    margin-left: -10px;
+    display: flex;
+    justify-content: flex-end; /* Lo mueve a la derecha */
+    margin-right: -20px;       /* Lo pega al margen */
+    margin-top: 20px;
 }
 
 .footer-castle img {
-    width: 400px; /* Tamaño grande pedido por tu compañero */
+    width: 450px;              /* Tamaño grande pedido */
     height: auto;
     display: block;
 }
