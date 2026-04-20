@@ -464,28 +464,32 @@ window.initSharedUI = function() {
     if (window.initSharedUI) initSharedUI();
 });
 
-    window.enviarNewsletter = function() {
+    // FORZAR FUNCIÓN GLOBAL
+window.enviarNewsletter = function() {
+    console.log("¡Cuervo mensajero activado!");
+    
     var emailInput = document.getElementById('newsletterEmail');
     var msg = document.getElementById('newsletterMsg');
     var emailValue = emailInput ? emailInput.value.trim() : '';
 
     if (!emailValue || emailValue.indexOf('@') === -1) {
-        if (msg) { msg.textContent = 'Email no válido'; msg.style.color = 'red'; }
+        alert("Por favor, introduce un email válido.");
         return;
     }
 
-    if (msg) msg.textContent = 'Enviando...';
+    if (msg) msg.textContent = 'Enviando petición al artesano...';
 
     emailjs.send('service_spleogq', 'template_ntkeve4', {
         user_email: emailValue,
         reply_to: "info@aceroylino.com"
     }).then(function() {
-        alert('¡Suscrito con éxito!');
+        alert('¡Suscrito con éxito, mi señor!');
         if (emailInput) emailInput.value = '';
-        document.getElementById('newsletterModal').classList.remove('active');
+        var modal = document.getElementById('newsletterModal');
+        if (modal) modal.classList.remove('active');
     }, function(err) {
-        alert('Error al enviar');
-        console.log(err);
+        alert('El cuervo se ha perdido (Error de envío)');
+        console.error("Fallo EmailJS:", err);
     });
 };
 }
