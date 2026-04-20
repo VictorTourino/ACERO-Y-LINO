@@ -394,7 +394,6 @@ document.addEventListener('DOMContentLoaded', function() {
     newsletterLinks.forEach(function(link) {
         link.addEventListener('click', function(e) {
             e.preventDefault();
-            if (newsletterModal) newsletterModal.classList.add('active');
         });
     });
 
@@ -443,6 +442,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
    // Lógica para arrastrar el carrusel con el ratón
+// ========== DRAG TO SCROLL FUNCTIONALITY ==========
 document.querySelectorAll('.carousel-wrapper').forEach(wrapper => {
     const slider = wrapper.querySelector('.products');
     let isDown = false;
@@ -454,7 +454,7 @@ document.querySelectorAll('.carousel-wrapper').forEach(wrapper => {
         wrapper.style.cursor = 'grabbing';
         startX = e.pageX - slider.offsetLeft;
         scrollLeft = slider.scrollLeft;
-        slider.style.scrollBehavior = 'auto'; // Desactiva el suavizado para que el arrastre sea instantáneo
+        slider.style.scrollBehavior = 'auto'; 
     });
 
     wrapper.addEventListener('mouseleave', () => {
@@ -465,15 +465,19 @@ document.querySelectorAll('.carousel-wrapper').forEach(wrapper => {
     wrapper.addEventListener('mouseup', () => {
         isDown = false;
         wrapper.style.cursor = 'grab';
-        slider.style.scrollBehavior = 'smooth'; // Reactiva el suavizado para las flechas
+        slider.style.scrollBehavior = 'smooth';
     });
 
     wrapper.addEventListener('mousemove', (e) => {
         if (!isDown) return;
         e.preventDefault();
         const x = e.pageX - slider.offsetLeft;
-        const walk = (x - startX) * 2; // Ajusta el 2 para más o menos sensibilidad
+        const walk = (x - startX) * 2; 
         slider.scrollLeft = scrollLeft - walk;
     });
-        
+
+    // Evita que al arrastrar se abra el producto por error
+    slider.addEventListener('click', (e) => {
+        if (isDown) e.preventDefault();
+    });
 });
