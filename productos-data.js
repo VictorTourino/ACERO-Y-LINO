@@ -21,25 +21,6 @@ window.PRODUCTOS = [
   },
   // ===== COMPLEMENTOS =====
   {
-    id: 6,
-    nombre: "Sombrero Vaquero",
-    categoria: "complementos",
-    descripcion: "Este sombrero presenta un acabado de cuero envejecido artificialmente, ofrece ese aspecto 'usado' y auténtico desde el primer día. Destaca por sus detalles de costura en cruz hechos a mano alrededor de la base de la corona y el ala, reforzando su estructura y dándole un aire artesanal. Su diseño robusto pero ligero lo hace perfecto tanto para aventuras al aire libre como para completar un look urbano con personalidad.",
-    precio: 60,
-    imagen: "Sombrero/10642549.png",
-    modelo3D: "Sombrero/Sombrero.glb",
-    colores: ["#1a2744", "#000000", "#5c3a1e", "#c6a44b"],
-    especificaciones: {
-      "Material": "Cuero sintético (PU) de alta calidad con textura de grano natural y efecto desgastado.",
-      "Acabado": "Puntas cosidas a mano con hilo encerado de alta resistencia.",
-      "Diseño": "Corona de estilo 'Cattleman' con ala curva clásica para máxima protección solar.",
-      "Ventilación": "Ojales metálicos laterales para asegurar la transpirabilidad en climas cálidos.",
-      "Color": "Marrón Tabaco con matices oxidados."
-    },
-    notaPrecio: "Si se desea personalizar, el precio aumentara en funcion de las modificaciones deseadas.",
-    seccion: "ofertas"
-  },
-  {
     id: 8,
     nombre: "Bandera",
     categoria: "complementos",
