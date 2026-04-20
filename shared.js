@@ -11,10 +11,11 @@ window.CARRITO = {
         this.updateBadge();
     },
     addItem: function(productId, cantidad) {
+        cantidad = cantidad || 1;
         var items = this.getItems();
         var existing = items.find(function(i) { return i.id === productId; });
-        if (existing) { existing.cantidad += (cantidad || 1); } 
-        else { items.push({ id: productId, cantidad: (cantidad || 1) }); }
+        if (existing) { existing.cantidad += cantidad; } 
+        else { items.push({ id: productId, cantidad: cantidad }); }
         this.saveItems(items);
         this.showNotification('Producto añadido al carrito');
     },
@@ -45,10 +46,20 @@ window.CARRITO = {
         });
         return total;
     },
+    getCount: function() {
+        var items = this.getItems();
+        var count = 0;
+        items.forEach(function(item) { count += item.cantidad; });
+        return count;
+    },
+    clear: function() {
+        sessionStorage.removeItem('aceroylino_cart');
+        this.updateBadge();
+        this.renderModal();
+    },
     updateBadge: function() {
         var badge = document.getElementById('cartBadge');
-        var count = 0;
-        this.getItems().forEach(function(i) { count += i.cantidad; });
+        var count = this.getCount();
         if (badge) {
             badge.textContent = count;
             badge.style.display = count > 0 ? 'flex' : 'none';
@@ -61,7 +72,7 @@ window.CARRITO = {
         notif.className = 'cart-notification show';
         notif.textContent = msg;
         document.body.appendChild(notif);
-        setTimeout(function() { notif.remove(); }, 2500);
+        setTimeout(function() { if(notif) notif.remove(); }, 2500);
     },
     renderModal: function() {
         var container = document.getElementById('cartItems');
@@ -80,6 +91,7 @@ window.CARRITO = {
         } else {
             if (emptyMsg) emptyMsg.style.display = 'none';
             if (cartActions) cartActions.style.display = 'block';
+            var self = this;
             items.forEach(function(item) {
                 var prod = window.PRODUCTOS.find(function(p) { return p.id === item.id; });
                 if (!prod) return;
@@ -96,84 +108,76 @@ window.CARRITO = {
             });
             if (totalEl) totalEl.textContent = this.getTotal().toFixed(2);
         }
-        // Disparar Newsletter solo al abrir carrito
+        // ✅ SOLO AQUÍ se abre la Newsletter automáticamente
         var newsletterModal = document.getElementById('newsletterModal');
         if (newsletterModal) newsletterModal.classList.add('active');
     }
 };
 
-// ========== LÓGICA DE BÚSQUEDA ==========
-function performSearch(query) {
-    var searchResults = document.getElementById('searchResults');
-    if (!searchResults || !window.PRODUCTOS) return;
-    var trimmed = query.trim().toLowerCase();
-    if (trimmed.length === 0) { searchResults.innerHTML = ''; return; }
-    
-    var terms = trimmed.split(/\s+/);
-    var results = window.PRODUCTOS.filter(function(p) {
-        var searchable = (p.nombre + ' ' + p.descripcion + ' ' + p.categoria).toLowerCase();
-        return terms.every(function(t) { return searchable.indexOf(t) !== -1; });
-    });
-
-    if (results.length === 0) {
-        searchResults.innerHTML = '<div class="search-no-results">No hay resultados</div>';
-        return;
-    }
-
-    var html = '';
-    results.forEach(function(p) {
-        html += '<a href="producto.html?id=' + p.id + '" class="search-result-item">' +
-            '<img src="' + p.imagen + '" class="search-result-img">' +
-            '<div class="search-result-info"><div>' + p.nombre + '</div><small>' + p.categoria + '</small></div>' +
-            '<div>' + p.precio + ' €</div></a>';
-    });
-    searchResults.innerHTML = html;
-}
-
-// ========== LÓGICA DE SESIÓN/LOGIN ==========
-function checkSession() {
-    var user = JSON.parse(sessionStorage.getItem('aceroylino_user') || 'null');
-    var userBtn = document.getElementById('userBtn');
-    if (user && user.loggedIn) {
-        if (userBtn) userBtn.classList.add('user-logged');
-        if (document.getElementById('welcomeText')) document.getElementById('welcomeText').textContent = 'Bienvenido, ' + user.email;
-        if (document.getElementById('loginForm')) document.getElementById('loginForm').style.display = 'none';
-        if (document.getElementById('userInfo')) document.getElementById('userInfo').style.display = 'block';
-    } else {
-        if (userBtn) userBtn.classList.remove('user-logged');
-        if (document.getElementById('loginForm')) document.getElementById('loginForm').style.display = 'block';
-        if (document.getElementById('userInfo')) document.getElementById('userInfo').style.display = 'none';
-    }
-}
-
-// ========== INICIALIZACIÓN GLOBAL ==========
+// ========== SHARED UI (Lupa, Hamburguesa, Login) ==========
 window.initSharedUI = function() {
-    // Hamburger
-    var hamburger = document.getElementById('hamburger');
     var dropdownMenu = document.getElementById('dropdownMenu');
     var goldLine = document.getElementById('goldLine');
-    if (hamburger) {
+    var hamburger = document.getElementById('hamburger');
+    var searchModal = document.getElementById('searchModal');
+    var searchInput = document.getElementById('searchInput');
+    var searchResults = document.getElementById('searchResults');
+    var loginModal = document.getElementById('loginModal');
+    var cartModal = document.getElementById('cartModal');
+
+    // HAMBURGER
+    if (hamburger && dropdownMenu) {
         hamburger.onclick = function(e) {
             e.stopPropagation();
             dropdownMenu.classList.toggle('active');
-            if (goldLine) goldLine.classList.toggle('active');
+            if(goldLine) goldLine.classList.toggle('active');
         };
     }
 
-    // Search
+    // SEARCH LOGIC
     var searchBtn = document.getElementById('searchBtn');
-    var searchInput = document.getElementById('searchInput');
     if (searchBtn) {
         searchBtn.onclick = function() { 
-            document.getElementById('searchModal').classList.add('active');
+            searchModal.classList.add('active');
             setTimeout(function() { if(searchInput) searchInput.focus(); }, 100);
         };
     }
+
+    function performSearch(query) {
+        if (!searchResults || !window.PRODUCTOS) return;
+        var trimmed = query.trim().toLowerCase();
+        if (trimmed.length === 0) { searchResults.innerHTML = ''; return; }
+        var terms = trimmed.split(/\s+/);
+        var results = window.PRODUCTOS.filter(function(p) {
+            var searchable = (p.nombre + ' ' + (p.descripcion || '') + ' ' + p.categoria).toLowerCase();
+            return terms.every(function(t) { return searchable.indexOf(t) !== -1; });
+        });
+        var html = '';
+        results.forEach(function(p) {
+            html += '<a href="producto.html?id=' + p.id + '" class="search-result-item">' +
+                '<img src="' + p.imagen + '" class="search-result-img">' +
+                '<div class="search-result-info"><div class="search-result-name">' + p.nombre + '</div><small>' + p.categoria + '</small></div>' +
+                '<div class="search-result-price">' + p.precio + ' €</div></a>';
+        });
+        searchResults.innerHTML = html || '<div class="search-no-results">No hay resultados</div>';
+    }
+
     if (searchInput) {
         searchInput.oninput = function() { performSearch(this.value); };
     }
 
-    // Login
+    // LOGIN & SESSION
+    function checkSession() {
+        var user = JSON.parse(sessionStorage.getItem('aceroylino_user') || 'null');
+        var userBtn = document.getElementById('userBtn');
+        if (user && user.loggedIn) {
+            if (userBtn) userBtn.classList.add('user-logged');
+            if (document.getElementById('loginForm')) document.getElementById('loginForm').style.display = 'none';
+            if (document.getElementById('userInfo')) document.getElementById('userInfo').style.display = 'block';
+            if (document.getElementById('welcomeText')) document.getElementById('welcomeText').textContent = 'Hola, ' + user.email;
+        }
+    }
+
     var loginSubmit = document.getElementById('loginSubmit');
     if (loginSubmit) {
         loginSubmit.onclick = function() {
@@ -181,47 +185,58 @@ window.initSharedUI = function() {
             if (email.includes('@')) {
                 sessionStorage.setItem('aceroylino_user', JSON.stringify({email: email, loggedIn: true}));
                 checkSession();
+                loginModal.classList.remove('active');
             }
         };
     }
+
     var logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
         logoutBtn.onclick = function() {
             sessionStorage.removeItem('aceroylino_user');
-            checkSession();
+            location.reload();
         };
     }
 
-    // Carrito
+    var userBtn = document.getElementById('userBtn');
+    if (userBtn) {
+        userBtn.onclick = function() { loginModal.classList.add('active'); };
+    }
+
+    // CART MODAL
     var cartBtn = document.getElementById('cartBtn');
     if (cartBtn) {
-        cartBtn.onclick = function() { 
-            CARRITO.renderModal(); 
-            document.getElementById('cartModal').classList.add('active'); 
-        };
+        cartBtn.onclick = function() { CARRITO.renderModal(); cartModal.classList.add('active'); };
     }
 
-    // Cerrar Modales al hacer clic fuera
+    // CERRAR TODO AL CLICAR FUERA
     window.onclick = function(e) {
-        if (e.target.classList.contains('search-modal')) e.target.classList.remove('active');
-        if (e.target.classList.contains('login-modal')) e.target.classList.remove('active');
-        if (e.target.classList.contains('cart-modal')) e.target.classList.remove('active');
-        if (e.target.classList.contains('newsletter-modal')) e.target.classList.remove('active');
+        if (e.target.classList.contains('active')) e.target.classList.remove('active');
     };
 
     checkSession();
     CARRITO.updateBadge();
 };
 
-// ========== NEWSLETTER ==========
+// ========== NEWSLETTER FUNCIONAL ==========
 window.enviarNewsletter = function() {
-    var email = document.getElementById('newsletterEmail').value;
-    if (!email.includes('@')) { alert("Email no válido"); return; }
-    emailjs.send('service_spleogq', 'template_ntkeve4', { user_email: email })
-    .then(function() { 
-        alert("¡Suscrito!"); 
-        document.getElementById('newsletterModal').classList.remove('active');
-    });
+    var emailInput = document.getElementById('newsletterEmail');
+    var msg = document.getElementById('newsletterMsg');
+    var emailValue = emailInput ? emailInput.value.trim() : '';
+
+    if (!emailValue.includes('@')) {
+        if (msg) { msg.textContent = 'Email no válido'; msg.style.color = 'red'; }
+        return;
+    }
+    if (msg) { msg.textContent = 'Enviando...'; msg.style.color = '#b8860b'; }
+
+    emailjs.send('service_spleogq', 'template_ntkeve4', { user_email: emailValue, reply_to: "info@aceroylino.com" })
+        .then(function() {
+            alert('¡Suscrito con éxito!');
+            document.getElementById('newsletterModal').classList.remove('active');
+        }, function() {
+            alert('Error al enviar');
+        });
 };
 
 document.addEventListener('DOMContentLoaded', initSharedUI);
