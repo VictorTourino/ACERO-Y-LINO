@@ -463,4 +463,29 @@ window.initSharedUI = function() {
     document.addEventListener('DOMContentLoaded', function() {
     if (window.initSharedUI) initSharedUI();
 });
+
+    window.enviarNewsletter = function() {
+    var emailInput = document.getElementById('newsletterEmail');
+    var msg = document.getElementById('newsletterMsg');
+    var emailValue = emailInput ? emailInput.value.trim() : '';
+
+    if (!emailValue || emailValue.indexOf('@') === -1) {
+        if (msg) { msg.textContent = 'Email no válido'; msg.style.color = 'red'; }
+        return;
+    }
+
+    if (msg) msg.textContent = 'Enviando...';
+
+    emailjs.send('service_spleogq', 'template_ntkeve4', {
+        user_email: emailValue,
+        reply_to: "info@aceroylino.com"
+    }).then(function() {
+        alert('¡Suscrito con éxito!');
+        if (emailInput) emailInput.value = '';
+        document.getElementById('newsletterModal').classList.remove('active');
+    }, function(err) {
+        alert('Error al enviar');
+        console.log(err);
+    });
+};
 }
