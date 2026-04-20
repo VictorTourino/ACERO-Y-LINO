@@ -358,19 +358,6 @@ body{
             transform: scale(1.1);
         }
 
-        /* Carrusel con transición suave */
-        .carousel-wrapper {
-            overflow: hidden;
-            width: 100%;
-            max-width: 500px;
-        }
-
-        .products {
-            display: flex;
-            gap: 20px;
-            transition: transform 0.4s ease;
-        }
-
         .product-card {
             background-color: var(--white);
             padding: 15px;
@@ -427,19 +414,6 @@ footer {
     background-color: var(--wine, #83072D); /* Fuerza el fondo rojo entero */
     position: relative;
     margin-top: 80px; 
-}
-
-/* El castillo asomando arriba a la derecha */
-.footer-castle {
-    display: flex;
-    justify-content: flex-start; /* Lo pega a la izquierda */
-    margin-bottom: -5px; /* Ajusta para que no flote */
-}
-
-.footer-castle img {
-    width: 400px; /* Aquí controlas el tamaño. ¡Hazlo tan grande como quieras! */
-    height: auto;
-    display: block;
 }
 
 /* Contenedor principal: ESTO FUERZA LA LÍNEA HORIZONTAL */
@@ -1322,26 +1296,28 @@ footer {
     cursor: grab;
     user-select: none;
     position: relative;
+    max-width: 100%; /* Asegura que no se salga de la pantalla */
 }
 
 .carousel-wrapper .products {
-    display: flex !important;   /* Forzamos fila */
+    display: flex !important;
     flex-wrap: nowrap !important;
     gap: 20px;
-    overflow-x: auto;
+    /* Cambiamos a auto para que el JS de arrastre pueda moverlo */
+    overflow-x: auto; 
     scroll-behavior: smooth;
-    padding: 20px 5px;
+    padding: 20px 10px;
     -webkit-overflow-scrolling: touch;
 }
 
-/* IMPORTANTE: Esto hace que los productos no salgan con ancho 0 */
+/* Evita que los productos se aplasten o desaparezcan */
 .carousel-wrapper .product-card {
     min-width: 250px !important; 
     flex: 0 0 auto !important;
     display: block !important;
 }
 
-/* Ocultar barra de scroll */
+/* Ocultar barra de scroll para que se vea medieval y limpio */
 .carousel-wrapper .products::-webkit-scrollbar {
     display: none;
 }
@@ -1350,18 +1326,31 @@ footer {
     scrollbar-width: none;  
 }
 
-/* El Castillo del Footer - AHORA A LA DERECHA */
+/* El Castillo del Footer - PEGADO A LA DERECHA */
+/* ========== CASTILLO SOBRE EL LÍMITE DEL FOOTER ========== */
 .footer-castle {
     display: flex;
-    justify-content: flex-end; /* Lo mueve a la derecha */
-    margin-right: -20px;       /* Lo pega al margen */
-    margin-top: 20px;
+    justify-content: flex-end; /* Pegado a la derecha */
+    width: 100%;
+    position: relative;
+    z-index: 10;               /* Asegura que esté por encima de otros elementos */
+    pointer-events: none;      /* Para que no estorbe si hay clics cerca */
 }
 
 .footer-castle img {
-    width: 450px;              /* Tamaño grande pedido */
+    width: 450px;              /* Tamaño grande */
     height: auto;
     display: block;
+    /* Ajuste crítico: margen negativo para que se apoye justo en la línea */
+    margin-bottom: -5px;       
+    filter: drop-shadow(0px -5px 10px rgba(0,0,0,0.1)); /* Sombra sutil hacia arriba */
+}
+
+footer {
+    background-color: var(--wine, #83072D);
+    position: relative;
+    margin-top: 0;             /* Eliminamos márgenes externos */
+    border-top: 2px solid var(--gold); /* Opcional: una línea dorada de base */
 }
 
 /* Añade esto a tus @media querys (o pégalo después de todo si no los tienes) */
