@@ -394,6 +394,7 @@ document.addEventListener('DOMContentLoaded', function() {
     newsletterLinks.forEach(function(link) {
         link.addEventListener('click', function(e) {
             e.preventDefault();
+            if (newsletterModal) newsletterModal.classList.add('active');
         });
     });
 
@@ -441,27 +442,4 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-   // Lógica para arrastrar el carrusel con el ratón
-// ========== DRAG TO SCROLL FUNCTIONALITY ==========
-document.querySelectorAll('.carousel-wrapper').forEach(wrapper => {
-    const slider = wrapper.querySelector('.products');
-    let isDown = false;
-    let startX;
-    let scrollLeft;
-
-    wrapper.onmousedown = (e) => {
-        isDown = true;
-        startX = e.pageX - slider.offsetLeft;
-        scrollLeft = slider.scrollLeft;
-        slider.style.scrollBehavior = 'auto';
-    };
-    wrapper.onmouseleave = () => isDown = false;
-    wrapper.onmouseup = () => isDown = false;
-    wrapper.onmousemove = (e) => {
-        if (!isDown) return;
-        e.preventDefault();
-        const x = e.pageX - slider.offsetLeft;
-        const walk = (x - startX) * 2;
-        slider.scrollLeft = scrollLeft - walk;
-    };
 });
