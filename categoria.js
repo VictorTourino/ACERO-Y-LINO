@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 var card = document.createElement('div');
                 card.className = 'product-grid-card';
                 card.innerHTML =
-                    '<a href="/producto.html?id=' + producto.id + '">' +
+                    '<a href="producto.html?id=' + producto.id + '">' +
                         '<img src="' + producto.imagen + '" alt="' + producto.nombre + '" class="product-grid-img">' +
                         '<div class="product-grid-info">' +
                             '<div class="product-grid-name">' + producto.nombre + '</div>' +
