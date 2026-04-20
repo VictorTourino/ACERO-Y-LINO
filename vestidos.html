@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>ACERO Y LINO - Vestidos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Vestidos medievales artesanales: vestidos de reina, de plebeya, capas, corsets y velos para recreacion historica.">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/categoria.css">
+    <link rel="shortcut icon" href="imagenes/fondo-favicon(32x32).png" type="image/x-icon">
+</head>
+<body data-categoria="vestidos">
+
+    <!-- Header -->
+    <header>
+        <div class="top-header">
+            <div class="logo">
+                <a href="index.html"><img src="imagenes/horizontal.png" alt="Acero y Lino"></a>
+            </div>
+            <div class="nav-icons">
+                <img src="imagenes/lupa.png" alt="Buscar" id="searchBtn">
+                <img src="imagenes/corazon.png" alt="Favoritos" id="favBtn">
+                <img src="imagenes/usuario.png" alt="Usuario" id="userBtn">
+                <div class="cart-wrapper">
+                    <img src="imagenes/carrito.png" alt="Carrito" id="cartBtn">
+                    <span class="cart-badge" id="cartBadge">0</span>
+                </div>
+                <div class="hamburger-container">
+                    <div class="hamburger" id="hamburger">
+                        <img src="imagenes/hamburguesa.png" alt="Menu">
+                    </div>
+                    <div class="gold-line" id="goldLine"></div>
+                </div>
+            </div>
+        </div>
+        <nav class="dropdown-menu" id="dropdownMenu">
+            <ul>
+                <li><a href="index.html">INICIO</a></li>
+                <li><a href="armaduras.html">ARMADURAS</a></li>
+                <li><a href="complementos.html">COMPLEMENTOS</a></li>
+                <li><a href="vestidos.html" class="active-link">VESTIDOS</a></li>
+                <li><a href="gambesones.html">GAMBESONES</a></li>
+                <li><a href="maquillaje.html">MAQUILLAJE</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Search Modal -->
+    <div class="search-modal" id="searchModal">
+        <div class="search-container">
+            <button class="search-close" id="searchClose">&times;</button>
+            <h3>BUSCAR PRODUCTOS</h3>
+            <input type="text" id="searchInput" placeholder="Escribe tu busqueda..." autocomplete="off">
+            <div id="searchResults" class="search-results"></div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="search-modal" id="loginModal">
+        <div class="search-container login-container">
+            <button class="search-close" id="loginClose">&times;</button>
+            <div id="loginForm">
+                <h3>INICIAR SESION</h3>
+                <input type="email" id="loginEmail" placeholder="Email" autocomplete="email">
+                <input type="password" id="loginPassword" placeholder="Contrasena" autocomplete="current-password">
+                <button id="loginSubmit" class="login-btn">ENTRAR</button>
+                <p id="loginError" class="login-error"></p>
+            </div>
+            <div id="userInfo" style="display:none;">
+                <h3>MI CUENTA</h3>
+                <div class="user-welcome">
+                    <svg class="user-avatar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                    </svg>
+                    <p id="welcomeText"></p>
+                </div>
+                <button id="logoutBtn" class="login-btn logout-btn">CERRAR SESION</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Modal -->
+<div class="search-modal" id="cartModal">
+        <div class="search-container">
+            <button class="search-close" id="cartClose">&times;</button>
+            <h3>CARRITO DE COMPRA</h3>
+            <div id="cartEmpty" class="cart-empty-msg">Tu carrito esta vacio.</div>
+            <div id="cartItems"></div>
+            <div id="cartActions" style="display:none;">
+                <div class="cart-total-row">
+                    <span class="cart-total-label">TOTAL:</span>
+                    <span class="cart-total-amount"><span id="cartTotal">0</span> &euro;</span>
+                </div>
+                <div class="cart-actions">
+                    <button class="btn-clear-cart" id="clearCartBtn">VACIAR</button>
+                    <button class="btn-checkout" onclick="abrirPasarela()">COMPRAR</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="search-modal" id="favModal">
+        <div class="search-container">
+            <button class="search-close" id="favClose">&times;</button>
+            <h3 style="font-family: 'Metamorphous', cursive; color: var(--wine); margin-bottom: 20px;">MIS FAVORITOS</h3>
+            <div id="favEmpty" class="cart-empty-msg">No tienes productos en favoritos.</div>
+            <div id="favItems" style="max-height: 400px; overflow-y: auto;"></div>
+        </div>
+    </div>
+
+    <div class="search-modal" id="checkoutModal">
+        <div class="search-container login-container" style="max-width: 500px; text-align: center;">
+            <button class="search-close" id="checkoutClose">&times;</button>
+            <h3 style="font-family: 'Metamorphous', cursive; color: var(--wine); margin-bottom: 20px;">FINALIZAR COMPRA</h3>
+            
+            <div id="checkoutFormContainer">
+                <p style="font-family: 'MedievalSharp', cursive; margin-bottom: 15px; font-size: 15px;">Selecciona tu método de pago:</p>
+                
+                <div style="display: flex; gap: 20px; justify-content: center; margin-bottom: 20px;">
+                    <label style="font-family: 'MedievalSharp', cursive; cursor: pointer; font-size: 16px;">
+                        <input type="radio" name="paymentMethod" value="card" checked id="radioCard" style="width: auto; margin-right: 5px;"> Tarjeta
+                    </label>
+                    <label style="font-family: 'MedievalSharp', cursive; cursor: pointer; font-size: 16px;">
+                        <input type="radio" name="paymentMethod" value="paypal" id="radioPaypal" style="width: auto; margin-right: 5px;"> PayPal
+                    </label>
+                </div>
+
+                <div id="formCard">
+                    <input type="text" placeholder="Nombre titular de la tarjeta" autocomplete="cc-name">
+                    <input type="text" placeholder="Número de la tarjeta" maxlength="19" autocomplete="cc-number">
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" placeholder="MM/AA" maxlength="5" style="flex: 1;" autocomplete="cc-exp">
+                        <input type="text" placeholder="CVV" maxlength="3" style="flex: 1;" autocomplete="cc-csc">
+                    </div>
+                </div>
+
+                <div id="formPaypal" style="display: none;">
+                    <input type="email" placeholder="Correo electrónico de PayPal">
+                    <input type="password" placeholder="Contraseña">
+                </div>
+
+                <button id="paySubmitBtn" class="login-btn" style="margin-top: 15px;">PAGAR AHORA</button>
+            </div>
+
+            <div id="checkoutSuccess" style="display: none; padding: 20px 0;">
+                <svg viewBox="0 0 24 24" style="width: 70px; height: 70px; fill: #2d8a4e; margin-bottom: 15px;">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+                <h3 style="font-family: 'Metamorphous', cursive; color: #2d8a4e; margin-bottom: 10px;">¡PAGO VALIDADO!</h3>
+                <p style="font-family: 'MedievalSharp', cursive; font-size: 16px; color: var(--black); line-height: 1.5;">Tu pedido ha sido procesado correctamente. Lo recibirás en tu domicilio en los próximos <strong>7 días laborales</strong>.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Newsletter Modal -->
+    <div class="search-modal" id="newsletterModal">
+        <div class="search-container newsletter-modal-container">
+            <button class="search-close" id="newsletterClose">&times;</button>
+            <h3>NEWSLETTER</h3>
+            <p style="font-family:'MedievalSharp',cursive;text-align:center;margin-bottom:15px;font-size:14px;">Suscribete para recibir las ultimas novedades y ofertas exclusivas.</p>
+            <input type="email" id="newsletterEmail" placeholder="Tu correo electronico..." autocomplete="email">
+            <button id="newsletterSubmit" class="login-btn" style="margin-top:15px;">SUSCRIBIRSE</button>
+            <p id="newsletterMsg" style="font-family:'MedievalSharp',cursive;font-size:13px;text-align:center;margin-top:10px;min-height:18px;"></p>
+        </div>
+    </div>
+
+    <!-- Category Hero -->
+    <section class="category-hero">
+        <h1>VESTIDOS</h1>
+        <p>Vestimenta medieval artesanal para damas y senoras. Desde vestidos de reina hasta trajes de campesina, capas, corsets y velos confeccionados con materiales nobles.</p>
+    </section>
+
+    <!-- Products Grid -->
+    <section class="products-grid-section">
+        <div class="products-grid" id="productsGrid"></div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-castle">
+            <img src="imagenes/castillo.png" alt="Castillo">
+        </div>
+        
+        <div class="footer-main-row">
+            <div class="footer-logo">
+                <img src="imagenes/Logo (1).png" alt="Acero y Lino">
+            </div>
+
+            <div class="footer-col">
+                <h4>Enlaces de interés</h4>
+                <ul>
+                    <li><a href="javascript:void(0)" id="footerMiCuenta">Mi cuenta</a></li>
+                    <li><a href="hazte-socio.html">Hazte socio</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                    <li><a href="javascript:void(0)" data-action="newsletter">Newsletter</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Menú Legal</h4>
+                <ul>
+                    <li><a href="aviso-legal.html">Aviso legal</a></li>
+                    <li><a href="condiciones-de-venta.html">Condiciones de venta</a></li>
+                    <li><a href="mantenimiento.html">Mantenimiento</a></li>
+                    <li><a href="politica-de-privacidad.html">Política de privacidad</a></li>
+                    <li><a href="politica-de-cookies.html">Política de cookies</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-newsletter">
+                <img src="imagenes/sobre.png" alt="Newsletter">
+                <div class="footer-newsletter-text">
+                    <h4>NEWSLETTER</h4>
+                    <a href="javascript:void(0)" data-action="newsletter" class="btn-suscribete">Suscríbete</a>
+                </div>
+            </div>
+
+            <div class="footer-socials">
+                <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+                <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+                <a href="https://www.x.com" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+                <a href="https://www.tiktok.com" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></a>
+                <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2026 Acero y Lino. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+    <script src="productos-data.js"></script>
+    <script src="shared.js"></script>
+    <script src="categoria.js"></script>
+    <script>
+        function abrirPasarela() {
+            // Cerramos el carrito si está abierto
+            var cartModal = document.getElementById('cartModal');
+            if(cartModal) cartModal.classList.remove('active');
+            
+            // Mostramos la pasarela
+            var checkoutModal = document.getElementById('checkoutModal');
+            if(checkoutModal) {
+                checkoutModal.classList.add('active');
+                // Reseteamos las vistas por si el usuario entra varias veces
+                document.getElementById('checkoutFormContainer').style.display = 'block';
+                document.getElementById('checkoutSuccess').style.display = 'none';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var checkoutModal = document.getElementById('checkoutModal');
+            var checkoutClose = document.getElementById('checkoutClose');
+            var paySubmitBtn = document.getElementById('paySubmitBtn');
+            
+            var radioCard = document.getElementById('radioCard');
+            var radioPaypal = document.getElementById('radioPaypal');
+            var formCard = document.getElementById('formCard');
+            var formPaypal = document.getElementById('formPaypal');
+
+            // Cerrar el modal con la X
+            if(checkoutClose) {
+                checkoutClose.addEventListener('click', function() {
+                    checkoutModal.classList.remove('active');
+                });
+            }
+
+            // Alternar entre Tarjeta y PayPal
+            if(radioCard && radioPaypal) {
+                radioCard.addEventListener('change', function() {
+                    formCard.style.display = 'block';
+                    formPaypal.style.display = 'none';
+                });
+                radioPaypal.addEventListener('change', function() {
+                    formCard.style.display = 'none';
+                    formPaypal.style.display = 'block';
+                });
+            }
+
+            // Simular el pago exitoso al darle a PAGAR AHORA
+            if(paySubmitBtn) {
+                paySubmitBtn.addEventListener('click', function() {
+                    // Ocultar formulario y mostrar mensaje de éxito
+                    document.getElementById('checkoutFormContainer').style.display = 'none';
+                    document.getElementById('checkoutSuccess').style.display = 'block';
+
+                    // Vaciar el carrito de verdad usando tu objeto global CARRITO
+                    if(window.CARRITO) {
+                        window.CARRITO.clear();
+                        window.CARRITO.renderModal();
+                    }
+
+                    // Cerrar la ventana automáticamente tras 5 segundos
+                    setTimeout(function() {
+                        checkoutModal.classList.remove('active');
+                    }, 5000);
+                });
+            }
+
+            // Cerrar clicando fuera del recuadro
+            window.addEventListener('click', function(e) {
+                if (e.target === checkoutModal) {
+                    checkoutModal.classList.remove('active');
+                }
+            });
+            // Cerrar con la tecla Escape
+            window.addEventListener('keydown', function(e) {
+                if(e.key === 'Escape' && checkoutModal && checkoutModal.classList.contains('active')) {
+                    checkoutModal.classList.remove('active');
+                }
+            });
+        });
+    </script>
+
+    <script>
+(function(){
+    if(!window.chatbase||window.chatbase("getState")!=="initialized"){
+        // Hemos cambiado 'arguments' por 'args' aquí
+        window.chatbase=(...args)=>{
+            if(!window.chatbase.q){window.chatbase.q=[]}
+            window.chatbase.q.push(args) // Y aquí
+        };
+        window.chatbase=new Proxy(window.chatbase,{
+            get(target,prop){
+                if(prop==="q"){return target.q}
+                return(...args)=>target(prop,...args)
+            }
+        })
+    }
+    const onLoad=function(){
+        const script=document.createElement("script");
+        script.src="https://www.chatbase.co/embed.min.js";
+        script.id="a_VMRF0xeOV1NCusz4sqj";
+        script.domain="www.chatbase.co";
+        document.body.appendChild(script)
+    };
+    if(document.readyState==="complete"){onLoad()}
+    else{window.addEventListener("load",onLoad)}
+})();
+</script>
+
+<script>
+        // 1. Objeto Global de Favoritos
+        window.FAVORITOS = {
+            // Carga los favoritos guardados o crea una lista vacía
+            items: JSON.parse(localStorage.getItem('mis_favoritos')) || [],
+            
+            add: function(producto) {
+                // Comprueba si el producto ya está en la lista
+                const existe = this.items.find(item => item.id === producto.id);
+                if(!existe) {
+                    this.items.push(producto);
+                    this.save();
+                    alert('¡Añadido a tus favoritos, mi señor!');
+                } else {
+                    alert('Este artículo ya se encuentra en tus favoritos.');
+                }
+            },
+            
+            remove: function(id) {
+                this.items = this.items.filter(item => item.id !== id);
+                this.save();
+                this.renderModal(); // Actualiza la vista al borrar
+            },
+            
+            save: function() {
+                localStorage.setItem('mis_favoritos', JSON.stringify(this.items));
+            },
+            
+            renderModal: function() {
+                const container = document.getElementById('favItems');
+                const emptyMsg = document.getElementById('favEmpty');
+                if(!container) return;
+
+                container.innerHTML = '';
+                
+                if(this.items.length === 0) {
+                    emptyMsg.style.display = 'block';
+                } else {
+                    emptyMsg.style.display = 'none';
+                    // Dibuja cada producto en la lista
+                    this.items.forEach(item => {
+                        const div = document.createElement('div');
+                        div.style.display = 'flex';
+                        div.style.alignItems = 'center';
+                        div.style.borderBottom = '1px solid rgba(131, 7, 45, 0.2)';
+                        div.style.padding = '15px 0';
+                        div.innerHTML = `
+                            <img src="${item.imagen}" style="width: 60px; height: 60px; object-fit: cover; margin-right: 15px; border-radius: 5px; border: 1px solid var(--gold);">
+                            <div style="flex: 1; text-align: left;">
+                                <h4 style="margin: 0 0 5px; font-family: 'Metamorphous', cursive; font-size: 15px; color: var(--wine);">${item.nombre}</h4>
+                                <p style="margin: 0; font-family: 'MedievalSharp', cursive; font-size: 14px;">${item.precio} &euro;</p>
+                            </div>
+                            <a href="producto.html?id=${item.id}" style="margin-right: 15px; font-size: 13px; color: var(--wine); text-decoration: underline; font-family: 'Metamorphous', cursive;">Ver</a>
+                            <button onclick="window.FAVORITOS.remove('${item.id}')" style="background: none; border: none; color: #cc0000; font-size: 24px; cursor: pointer;" title="Eliminar">&times;</button>
+                        `;
+                        container.appendChild(div);
+                    });
+                }
+            }
+        };
+
+        // 2. Lógica de los botones (Abrir modal, cerrar y botón de añadir)
+        document.addEventListener('DOMContentLoaded', function() {
+            var favBtn = document.getElementById('favBtn');
+            var favModal = document.getElementById('favModal');
+            var favClose = document.getElementById('favClose');
+            var addToFavBtn = document.getElementById('addToFavBtn');
+
+            // Abrir modal de favoritos desde el header
+            if(favBtn && favModal) {
+                favBtn.style.cursor = 'pointer'; // Para que parezca un botón
+                favBtn.addEventListener('click', function() {
+                    window.FAVORITOS.renderModal();
+                    favModal.classList.add('active');
+                });
+            }
+
+            // Cerrar modal
+            if(favClose) {
+                favClose.addEventListener('click', function() {
+                    favModal.classList.remove('active');
+                });
+            }
+
+            // Lógica del botón de "AÑADIR A FAVORITOS" en la ficha de producto
+            if(addToFavBtn) {
+                addToFavBtn.addEventListener('click', function() {
+                    // Extraemos los datos directamente de la página que el usuario está viendo
+                    var id = new URLSearchParams(window.location.search).get('id') || 'desconocido';
+                    var name = document.getElementById('productName').innerText;
+                    var priceText = document.getElementById('productPrice').innerText;
+                    var img = document.getElementById('productImage').src;
+
+                    // Lo mandamos a nuestro objeto global
+                    window.FAVORITOS.add({
+                        id: id,
+                        nombre: name,
+                        precio: priceText,
+                        imagen: img
+                    });
+                });
+            }
+
+            // Cerrar modal al clicar fuera o usar ESC
+            window.addEventListener('click', function(e) {
+                if (e.target === favModal) favModal.classList.remove('active');
+            });
+            window.addEventListener('keydown', function(e) {
+                if(e.key === 'Escape' && favModal && favModal.classList.contains('active')) {
+                    favModal.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
