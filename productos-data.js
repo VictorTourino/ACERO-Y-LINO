@@ -7,8 +7,8 @@ window.PRODUCTOS = [
     categoria: "armaduras",
     descripcion: "Esta armadura combina la robustez del acero con una movilidad articulada sorprendente, permitiendo al caballero moverse con agilidad y confianza. Cada pieza ha sido forjada y pulida a mano, presentando un acabado en acero pavonado o envejecido que le otorga un aire de veteranía. Desde el yelmo de bacinete con visor funcional hasta las grebas perfectamente ajustadas, esta armadura es una obra maestra de la ingeniería medieval.",
     precio: 2000,
-    imagen: "/ArmaduraMetal/ArmaduraMetal.png",
-    modelo3D: "/ArmaduraMetal/ArmaduraMetal.glb",
+    imagen: "ArmaduraMetal/ArmaduraMetal.png",
+    modelo3D: "ArmaduraMetal/ArmaduraMetal.glb",
     colores: ["#8c8c8c", "#4a4a4a", "#c0c0c0"],
     especificaciones: {
       "Yelmo": "Tipo Gran Bacinete con visor móvil y orificios de ventilación optimizados.",
