@@ -105,6 +105,9 @@ window.CARRITO = {
             if (emptyMsg) emptyMsg.style.display = 'block';
             if (cartActions) cartActions.style.display = 'none';
             if (totalEl) totalEl.textContent = '0';
+            // También podemos abrirlo aquí si quieres que salga aunque el carro esté vacío
+            var newsletterModal = document.getElementById('newsletterModal');
+            if (newsletterModal) newsletterModal.classList.add('active');
             return;
         }
 
@@ -133,6 +136,15 @@ window.CARRITO = {
                 '</div>';
             container.appendChild(row);
         });
+
+        if (totalEl) totalEl.textContent = this.getTotal().toFixed(2);
+
+        // ✅ AQUÍ ES EL SITIO PERFECTO (Fuera del bucle)
+        var newsletterModal = document.getElementById('newsletterModal');
+        if (newsletterModal) {
+            newsletterModal.classList.add('active');
+        }
+    }
 
         container.onclick = function(e) {
             var btn = e.target.closest('[data-id]');
@@ -173,7 +185,6 @@ window.initSharedUI = function() {
     newsletterLinks.forEach(function(link) {
         link.addEventListener('click', function(e) {
             e.preventDefault();
-            if (newsletterModal) newsletterModal.classList.add('active');
         });
     });
 
