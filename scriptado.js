@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         var html = '';
         results.forEach(function(producto) {
-            html += '<a href="/producto.html?id=' + producto.id + '" class="search-result-item">' +
+            html += '<a href="producto.html?id=' + producto.id + '" class="search-result-item">' +
                 '<img src="' + producto.imagen + '" alt="' + producto.nombre + '" class="search-result-img">' +
                 '<div class="search-result-info">' +
                 '<div class="search-result-name">' + producto.nombre + '</div>' +
