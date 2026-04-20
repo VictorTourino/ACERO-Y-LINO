@@ -158,6 +158,79 @@ window.CARRITO = {
 
 // ========== SHARED PAGE INITIALIZATION ==========
 window.initSharedUI = function() {
+    var newsletterLinks = document.querySelectorAll('[data-action="newsletter"]');
+    var newsletterClose = document.getElementById('newsletterClose');
+    var newsletterSubmit = document.getElementById('newsletterSubmit');
+    var newsletterModal = document.getElementById('newsletterModal');
+
+    // Abrir el modal desde cualquier enlace (header o footer)
+    newsletterLinks.forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (newsletterModal) newsletterModal.classList.add('active');
+        });
+    });
+
+    // Cerrar el modal con la X
+    if (newsletterClose) {
+        newsletterClose.addEventListener('click', function() { 
+            if (newsletterModal) newsletterModal.classList.remove('active'); 
+        });
+    }
+
+    // Lógica de envío al pulsar SUSCRIBIRSE
+    if (newsletterSubmit) {
+        newsletterSubmit.addEventListener('click', function() {
+            var emailInput = document.getElementById('newsletterEmail');
+            var msg = document.getElementById('newsletterMsg');
+            var emailValue = emailInput ? emailInput.value.trim() : '';
+
+            // 1. Validación
+            if (!emailValue || emailValue.indexOf('@') === -1) {
+                if (msg) { 
+                    msg.textContent = 'Introduce un email valido.'; 
+                    msg.style.color = '#cc0000'; 
+                }
+                return;
+            }
+
+            // 2. Feedback visual (Dorado)
+            if (msg) { 
+                msg.textContent = 'Enviando cuervo mensajero...'; 
+                msg.style.color = '#b8860b'; 
+            }
+
+            // 3. Envío con tus credenciales
+            var serviceID = 'service_spleogq';
+            var templateID = 'template_ntkeve4';
+            var templateParams = {
+                user_email: emailValue,
+                reply_to: "info@aceroylino.com"
+            };
+
+            emailjs.send(serviceID, templateID, templateParams)
+                .then(function() {
+                    // Éxito: Usamos la notificación visual de abajo a la derecha que te gustó
+                    if (window.CARRITO && window.CARRITO.showNotification) {
+                        window.CARRITO.showNotification('¡Te has suscrito correctamente!');
+                    }
+                    
+                    // Limpiar y cerrar tras 1 segundo para que de tiempo a ver que ha funcionado
+                    setTimeout(function() {
+                        if (emailInput) emailInput.value = '';
+                        if (msg) msg.textContent = '';
+                        if (newsletterModal) newsletterModal.classList.remove('active');
+                    }, 1000);
+
+                }, function(error) {
+                    console.error("Error EmailJS:", error);
+                    if (msg) { 
+                        msg.textContent = 'Error en el envío. Reintenta.'; 
+                        msg.style.color = '#cc0000'; 
+                    }
+                });
+        });
+    }
     var dropdownMenu = document.getElementById('dropdownMenu');
     var goldLine = document.getElementById('goldLine');
     var hamburger = document.getElementById('hamburger');
@@ -387,77 +460,7 @@ window.initSharedUI = function() {
     }
 
     // ========== NEWSLETTER FUNCIONAL CON EMAILJS ==========
-    var newsletterLinks = document.querySelectorAll('[data-action="newsletter"]');
-    var newsletterClose = document.getElementById('newsletterClose');
-    var newsletterSubmit = document.getElementById('newsletterSubmit');
-    var newsletterModal = document.getElementById('newsletterModal');
-
-    // Abrir el modal desde cualquier enlace (header o footer)
-    newsletterLinks.forEach(function(link) {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            if (newsletterModal) newsletterModal.classList.add('active');
-        });
-    });
-
-    // Cerrar el modal con la X
-    if (newsletterClose) {
-        newsletterClose.addEventListener('click', function() { 
-            if (newsletterModal) newsletterModal.classList.remove('active'); 
-        });
-    }
-
-    // Lógica de envío al pulsar SUSCRIBIRSE
-    if (newsletterSubmit) {
-        newsletterSubmit.addEventListener('click', function() {
-            var emailInput = document.getElementById('newsletterEmail');
-            var msg = document.getElementById('newsletterMsg');
-            var emailValue = emailInput ? emailInput.value.trim() : '';
-
-            // 1. Validación
-            if (!emailValue || emailValue.indexOf('@') === -1) {
-                if (msg) { 
-                    msg.textContent = 'Introduce un email valido.'; 
-                    msg.style.color = '#cc0000'; 
-                }
-                return;
-            }
-
-            // 2. Feedback visual (Dorado)
-            if (msg) { 
-                msg.textContent = 'Enviando cuervo mensajero...'; 
-                msg.style.color = '#b8860b'; 
-            }
-
-            // 3. Envío con tus credenciales
-            var serviceID = 'service_spleogq';
-            var templateID = 'template_ntkeve4';
-            var templateParams = {
-                user_email: emailValue,
-                reply_to: "info@aceroylino.com"
-            };
-
-            emailjs.send(serviceID, templateID, templateParams)
-                .then(function() {
-                    // Éxito: Usamos la notificación visual de abajo a la derecha que te gustó
-                    if (window.CARRITO && window.CARRITO.showNotification) {
-                        window.CARRITO.showNotification('¡Te has suscrito correctamente!');
-                    }
-                    
-                    // Limpiar y cerrar tras 1 segundo para que de tiempo a ver que ha funcionado
-                    setTimeout(function() {
-                        if (emailInput) emailInput.value = '';
-                        if (msg) msg.textContent = '';
-                        if (newsletterModal) newsletterModal.classList.remove('active');
-                    }, 1000);
-
-                }, function(error) {
-                    console.error("Error EmailJS:", error);
-                    if (msg) { 
-                        msg.textContent = 'Error en el envío. Reintenta.'; 
-                        msg.style.color = '#cc0000'; 
-                    }
-                });
-        });
-    }
+    document.addEventListener('DOMContentLoaded', function() {
+    if (window.initSharedUI) initSharedUI();
+});
 }
