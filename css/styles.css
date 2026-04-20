@@ -1316,6 +1316,45 @@ footer {
     background: transparent;
 }
 
+/* ========== AJUSTES PARA CARRUSEL ARRASTRABLE ========== */
+.carousel-wrapper {
+    overflow: hidden;
+    cursor: grab;
+    user-select: none; /* Evita que se seleccione texto al arrastrar */
+}
+
+.carousel-wrapper .products {
+    display: flex !important;   /* Forzamos fila en lugar de cuadrícula */
+    flex-wrap: nowrap !important;
+    gap: 20px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 20px 5px;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Ocultar barra de scroll para estética medieval */
+.carousel-wrapper .products::-webkit-scrollbar {
+    display: none;
+}
+
+.carousel-wrapper .products {
+    -ms-overflow-style: none;  
+    scrollbar-width: none;  
+}
+
+/* El Castillo del Footer */
+.footer-castle {
+    text-align: left;
+    margin-left: -10px;
+}
+
+.footer-castle img {
+    width: 400px; /* Tamaño grande pedido por tu compañero */
+    height: auto;
+    display: block;
+}
+
 /* Añade esto a tus @media querys (o pégalo después de todo si no los tienes) */
 @media (min-width: 768px) {
     .community-carousel { height: 450px; }
