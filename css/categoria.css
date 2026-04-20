@@ -274,6 +274,31 @@ header {
     background-color: #6a0625;
 }
 
+/* Esto es para que los productos se pongan en fila y permitan el arrastre */
+.carousel-container .products-grid {
+    display: flex;             /* Cambiamos grid por flex para ponerlos en fila */
+    flex-wrap: nowrap;        /* Evita que los productos se vayan abajo */
+    overflow-x: auto;         /* Permite el movimiento lateral */
+    scroll-behavior: smooth;   /* Para que las flechas muevan suave */
+    cursor: grab;             /* La manita para avisar que se puede arrastrar */
+    padding-bottom: 15px;      /* Espacio para que la sombra no se corte */
+}
+
+/* Ajuste para que las tarjetas no se encojan en el carrusel */
+.carousel-container .product-grid-card {
+    min-width: 280px;         /* Tamaño fijo de cada tarjeta en el carrusel */
+    flex: 0 0 auto;           /* Evita que se deformen */
+}
+
+/* Ocultar la barra de scroll para que quede profesional */
+.carousel-container .products-grid::-webkit-scrollbar {
+    display: none;
+}
+.carousel-container .products-grid {
+    -ms-overflow-style: none;  
+    scrollbar-width: none;  
+}
+
 /* ========== CART MODAL ========== */
 .cart-item {
     display: flex;
@@ -453,14 +478,15 @@ footer {
 }
 
 .footer-castle {
-    position: absolute;
-    top: -55px; 
-    right: 5%;
+    text-align: left; /* Lo pega a la izquierda */
+    margin-left: -20px; /* Lo saca un poco hacia el margen */
 }
 
 .footer-castle img {
-    height: 60px;
-    width: auto;
+    width: 400px; /* Tamaño más imponente */
+    height: auto;
+    display: block;
+    opacity: 0.9;
 }
 
 .footer-main-row {
