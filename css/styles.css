@@ -358,6 +358,19 @@ body{
             transform: scale(1.1);
         }
 
+        /* Carrusel con transición suave */
+        .carousel-wrapper {
+            overflow: hidden;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .products {
+            display: flex;
+            gap: 20px;
+            transition: transform 0.4s ease;
+        }
+
         .product-card {
             background-color: var(--white);
             padding: 15px;
@@ -414,6 +427,18 @@ footer {
     background-color: var(--wine, #83072D); /* Fuerza el fondo rojo entero */
     position: relative;
     margin-top: 80px; 
+}
+
+/* El castillo asomando arriba a la derecha */
+.footer-castle {
+    position: absolute;
+    top: -55px; /* Ajusta este valor para subir o bajar el castillo */
+    right: 5%;
+}
+
+.footer-castle img {
+    height: 60px;
+    width: auto;
 }
 
 /* Contenedor principal: ESTO FUERZA LA LÍNEA HORIZONTAL */
@@ -680,7 +705,9 @@ footer {
         flex-direction: column;
         gap: 35px;
     }
-
+    .footer-castle {
+        top: -45px;
+    }
 }
 
         /* Responsive */
@@ -1286,73 +1313,6 @@ footer {
     height: 100%;
     z-index: 10;
     background: transparent;
-}
-
-/* ========== AJUSTES FINALES: CARRUSEL Y CASTILLO ========== */
-.carousel-wrapper {
-    overflow: hidden;
-    cursor: grab;
-    user-select: none;
-    position: relative;
-    max-width: 100%; /* Asegura que no se salga de la pantalla */
-}
-
-
-
-/* Evita que los productos se aplasten o desaparezcan */
-.carousel-wrapper .product-card {
-    min-width: 250px !important; 
-    flex: 0 0 auto !important;
-    display: block !important;
-}
-
-
-/* El Castillo del Footer - PEGADO A LA DERECHA */
-/* ========== CASTILLO SOBRE EL LÍMITE DEL FOOTER ========== */
-/* Castillo apoyado en el footer (derecha) */
-
-
-/* Carrusel funcional */
-
-footer {
-    background-color: var(--wine, #83072D);
-    position: relative;
-    margin-top: 0;             /* Eliminamos márgenes externos */
-    border-top: 2px solid var(--gold); /* Opcional: una línea dorada de base */
-}
-
-/* --- EL CASTILLO: A LA DERECHA Y PISANDO LO ROJO --- */
-.footer-castle {
-    display: flex !important;
-    justify-content: flex-end !important; /* Obliga a ir a la derecha */
-    width: 100%;
-    margin-bottom: -32px; /* Ajuste para que "pise" la línea del footer */
-    position: relative;
-    z-index: 10;
-    pointer-events: none;
-}
-
-.footer-castle img {
-    width: 380px; /* Tamaño del castillo */
-    height: auto;
-    display: block;
-}
-
-/* --- EL CARRUSEL: QUE SE VEAN LOS PRODUCTOS --- */
-.carousel-wrapper .products {
-    display: flex !important;
-    flex-wrap: nowrap !important;
-    gap: 20px !important;
-    overflow-x: hidden; /* Las flechas controlan el movimiento */
-    padding: 20px 0;
-    min-height: 200px;
-}
-
-.product-card {
-    min-width: 200px !important; /* Si esto no está, el ancho es 0 y no se ven */
-    flex: 0 0 auto;
-    background: white;
-    display: block !important;
 }
 
 /* Añade esto a tus @media querys (o pégalo después de todo si no los tienes) */
