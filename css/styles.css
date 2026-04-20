@@ -267,7 +267,7 @@ body{
         .hero {
             position: relative;
             height: 400px;
-            background-image: url('imagenes/fondo-banner.jpg');
+            background-image: url('../imagenes/fondo-banner.jpg');
             background-size: cover;
             background-position: center;
             display: flex;
