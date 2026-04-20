@@ -1297,16 +1297,7 @@ footer {
     max-width: 100%; /* Asegura que no se salga de la pantalla */
 }
 
-.carousel-wrapper .products {
-    display: flex !important;
-    flex-wrap: nowrap !important;
-    gap: 20px;
-    /* Cambiamos a auto para que el JS de arrastre pueda moverlo */
-    overflow-x: auto; 
-    scroll-behavior: smooth;
-    padding: 20px 10px;
-    -webkit-overflow-scrolling: touch;
-}
+
 
 /* Evita que los productos se aplasten o desaparezcan */
 .carousel-wrapper .product-card {
@@ -1315,43 +1306,53 @@ footer {
     display: block !important;
 }
 
-/* Ocultar barra de scroll para que se vea medieval y limpio */
-.carousel-wrapper .products::-webkit-scrollbar {
-    display: none;
-}
 
 /* El Castillo del Footer - PEGADO A LA DERECHA */
 /* ========== CASTILLO SOBRE EL LÍMITE DEL FOOTER ========== */
 /* Castillo apoyado en el footer (derecha) */
-.footer-castle {
-    display: flex;
-    justify-content: flex-end; 
-    margin-bottom: -10px; /* Esto hace que pise el rojo */
-    position: relative;
-    z-index: 10;
-}
-.footer-castle img {
-    width: 400px;
-    height: auto;
-}
+
 
 /* Carrusel funcional */
-.carousel-wrapper .products {
-    display: flex !important;
-    overflow-x: auto;
-    gap: 20px;
-    padding: 20px 0;
-}
-.product-card {
-    min-width: 250px !important;
-    flex: 0 0 auto;
-}
 
 footer {
     background-color: var(--wine, #83072D);
     position: relative;
     margin-top: 0;             /* Eliminamos márgenes externos */
     border-top: 2px solid var(--gold); /* Opcional: una línea dorada de base */
+}
+
+/* --- EL CASTILLO: A LA DERECHA Y PISANDO LO ROJO --- */
+.footer-castle {
+    display: flex !important;
+    justify-content: flex-end !important; /* Obliga a ir a la derecha */
+    width: 100%;
+    margin-bottom: -32px; /* Ajuste para que "pise" la línea del footer */
+    position: relative;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.footer-castle img {
+    width: 380px; /* Tamaño del castillo */
+    height: auto;
+    display: block;
+}
+
+/* --- EL CARRUSEL: QUE SE VEAN LOS PRODUCTOS --- */
+.carousel-wrapper .products {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 20px !important;
+    overflow-x: hidden; /* Las flechas controlan el movimiento */
+    padding: 20px 0;
+    min-height: 200px;
+}
+
+.product-card {
+    min-width: 200px !important; /* Si esto no está, el ancho es 0 y no se ven */
+    flex: 0 0 auto;
+    background: white;
+    display: block !important;
 }
 
 /* Añade esto a tus @media querys (o pégalo después de todo si no los tienes) */
