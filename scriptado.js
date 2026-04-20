@@ -449,35 +449,19 @@ document.querySelectorAll('.carousel-wrapper').forEach(wrapper => {
     let startX;
     let scrollLeft;
 
-    wrapper.addEventListener('mousedown', (e) => {
+    wrapper.onmousedown = (e) => {
         isDown = true;
-        wrapper.style.cursor = 'grabbing';
         startX = e.pageX - slider.offsetLeft;
         scrollLeft = slider.scrollLeft;
-        slider.style.scrollBehavior = 'auto'; 
-    });
-
-    wrapper.addEventListener('mouseleave', () => {
-        isDown = false;
-        wrapper.style.cursor = 'grab';
-    });
-
-    wrapper.addEventListener('mouseup', () => {
-        isDown = false;
-        wrapper.style.cursor = 'grab';
-        slider.style.scrollBehavior = 'smooth';
-    });
-
-    wrapper.addEventListener('mousemove', (e) => {
+        slider.style.scrollBehavior = 'auto';
+    };
+    wrapper.onmouseleave = () => isDown = false;
+    wrapper.onmouseup = () => isDown = false;
+    wrapper.onmousemove = (e) => {
         if (!isDown) return;
         e.preventDefault();
         const x = e.pageX - slider.offsetLeft;
-        const walk = (x - startX) * 2; 
+        const walk = (x - startX) * 2;
         slider.scrollLeft = scrollLeft - walk;
-    });
-
-    // Evita que al arrastrar se abra el producto por error
-    slider.addEventListener('click', (e) => {
-        if (isDown) e.preventDefault();
-    });
+    };
 });
