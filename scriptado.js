@@ -442,31 +442,38 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    document.querySelectorAll('.carousel-container').forEach(carousel => {
-    const slider = carousel.querySelector('.products-grid');
+   // Lógica para arrastrar el carrusel con el ratón
+document.querySelectorAll('.carousel-wrapper').forEach(wrapper => {
+    const slider = wrapper.querySelector('.products');
     let isDown = false;
     let startX;
     let scrollLeft;
 
-    slider.addEventListener('mousedown', (e) => {
+    wrapper.addEventListener('mousedown', (e) => {
         isDown = true;
-        slider.style.cursor = 'grabbing';
+        wrapper.style.cursor = 'grabbing';
         startX = e.pageX - slider.offsetLeft;
         scrollLeft = slider.scrollLeft;
+        slider.style.scrollBehavior = 'auto'; // Desactiva el suavizado para que el arrastre sea instantáneo
     });
-    slider.addEventListener('mouseleave', () => {
+
+    wrapper.addEventListener('mouseleave', () => {
         isDown = false;
-        slider.style.cursor = 'grab';
+        wrapper.style.cursor = 'grab';
     });
-    slider.addEventListener('mouseup', () => {
+
+    wrapper.addEventListener('mouseup', () => {
         isDown = false;
-        slider.style.cursor = 'grab';
+        wrapper.style.cursor = 'grab';
+        slider.style.scrollBehavior = 'smooth'; // Reactiva el suavizado para las flechas
     });
-    slider.addEventListener('mousemove', (e) => {
-        if(!isDown) return;
+
+    wrapper.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
         e.preventDefault();
         const x = e.pageX - slider.offsetLeft;
-        const walk = (x - startX) * 2; // Velocidad de desplazamiento
+        const walk = (x - startX) * 2; // Ajusta el 2 para más o menos sensibilidad
         slider.scrollLeft = scrollLeft - walk;
     });
+        
 });
