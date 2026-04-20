@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function createProductCard(producto) {
         return '<div class="product-card">' +
-            '<a href="/producto.html?id=' + producto.id + '">' +
+            '<a href="producto.html?id=' + producto.id + '">' +
             '<img src="' + producto.imagen + '" alt="' + producto.nombre + '">' +
             '<div class="product-card-name">' + producto.nombre + '</div>' +
             '<div class="product-card-price">' + producto.precio + ' &euro;</div>' +
