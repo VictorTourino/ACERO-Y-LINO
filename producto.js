@@ -69,6 +69,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    window.FAVORITOS.add({
+                    id: producto.id.toString(),
+                    nombre: producto.nombre,
+                    precio: producto.precio,
+                    imagen: producto.imagen // <--- ¡AQUÍ ESTÁ LA MAGIA!
+                });
     // ========== ADD TO CART ==========
     var addToCartBtn = document.getElementById('addToCartBtn');
     if (addToCartBtn && producto) {
