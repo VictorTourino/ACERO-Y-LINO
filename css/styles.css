@@ -293,6 +293,23 @@ body{
             margin-bottom: 25px;
             text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
         }
+        .fav-badge {
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            background-color: var(--wine);
+            color: var(--white);
+            font-family: 'Metamorphous', cursive;
+            font-size: 10px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: none; /* Se oculta si no hay favoritos */
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            pointer-events: none;
+        }
 
         .btn-primary {
             background-color: var(--wine);
