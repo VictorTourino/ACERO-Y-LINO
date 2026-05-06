@@ -535,30 +535,28 @@
             });
         }
 
+        // Lógica del botón de "AÑADIR A FAVORITOS" en la ficha de producto (OPCIÓN B)
         if(addToFavBtn) {
             addToFavBtn.addEventListener('click', function() {
-                var id = new URLSearchParams(window.location.search).get('id') || 'desconocido';
-                var name = document.getElementById('productName').innerText;
-                var priceText = document.getElementById('productPrice').innerText;
-                var img = document.getElementById('productImage').src;
+                // 1. Obtenemos el ID de la URL
+                var productId = new URLSearchParams(window.location.search).get('id');
+                
+                // 2. Buscamos el producto en tu archivo productos-data.js
+                var productoEncontrado = window.PRODUCTOS.find(p => p.id === parseInt(productId));
 
-                window.FAVORITOS.add({
-                    id: id,
-                    nombre: name,
-                    precio: priceText,
-                    imagen: img
-                });
+                // 3. Si lo encontramos, lo guardamos con los datos correctos
+                if(productoEncontrado) {
+                    window.FAVORITOS.add({
+                        id: productoEncontrado.id.toString(), 
+                        nombre: productoEncontrado.nombre,
+                        precio: productoEncontrado.precio,
+                        imagen: productoEncontrado.imagen
+                    });
+                } else {
+                    console.error("No se ha encontrado el producto.");
+                }
             });
         }
-
-        window.addEventListener('click', function(e) {
-            if (e.target === favModal) favModal.classList.remove('active');
-        });
-        window.addEventListener('keydown', function(e) {
-            if(e.key === 'Escape' && favModal && favModal.classList.contains('active')) {
-                favModal.classList.remove('active');
-            }
-        });
     });
 </script>
 </body>
