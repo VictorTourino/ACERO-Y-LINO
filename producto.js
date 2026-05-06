@@ -68,23 +68,6 @@ document.addEventListener('DOMContentLoaded', function() {
             specsTable.appendChild(row);
         });
     }
-
-    // ========== ADD TO FAVORITES ==========
-    var addToFavBtn = document.getElementById('addToFavBtn');
-    if (addToFavBtn && producto) {
-        addToFavBtn.addEventListener('click', function() {
-            if (window.FAVORITOS) {
-                window.FAVORITOS.add({
-                    id: producto.id.toString(),
-                    nombre: producto.nombre,
-                    precio: producto.precio,
-                    imagen: producto.imagen 
-                });
-            } else {
-                console.error("El objeto window.FAVORITOS no está cargado.");
-            }
-        });
-    }
     // ========== ADD TO CART ==========
     var addToCartBtn = document.getElementById('addToCartBtn');
     if (addToCartBtn && producto) {
