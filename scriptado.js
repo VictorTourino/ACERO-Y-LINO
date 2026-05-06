@@ -313,6 +313,38 @@ document.addEventListener('DOMContentLoaded', function() {
         CARRITO.updateBadge();
     }
 
+    // ========== FAVORITES MODAL ==========
+    var favModal = document.getElementById('favModal');
+    var favBtn = document.getElementById('favBtn');
+    var favClose = document.getElementById('favClose');
+
+    if (favBtn) {
+        favBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (favModal && window.FAVORITOS) {
+                FAVORITOS.renderModal();
+                favModal.classList.add('active');
+            }
+        });
+    }
+
+    if (favClose) {
+        favClose.addEventListener('click', function() {
+            if (favModal) favModal.classList.remove('active');
+        });
+    }
+
+    if (favModal) {
+        favModal.addEventListener('click', function(e) {
+            if (e.target === favModal) favModal.classList.remove('active');
+        });
+    }
+
+    // Update favorites badge on load
+    if (window.FAVORITOS) {
+        FAVORITOS.updateBadge();
+    }
+
     // ========== CLOSE MODALS WITH ESC ==========
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
@@ -327,6 +359,9 @@ document.addEventListener('DOMContentLoaded', function() {
             if (cartModal && cartModal.classList.contains('active')) {
                 cartModal.classList.remove('active');
             }
+            if (favModal && favModal.classList.contains('active')) {
+                favModal.classList.remove('active');
+            }
             if (menuOpen) {
                 menuOpen = false;
                 dropdownMenu.classList.remove('active');
@@ -339,7 +374,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function getVisibleItems() {
         if (window.innerWidth < 768) return 2;
         if (window.innerWidth < 1200) return 3;
-        return 3;
+        return 4;
     }
 
     function moveCarousel(carouselId, direction) {
