@@ -159,7 +159,26 @@ window.CARRITO = {
 // ========== SISTEMA GLOBAL DE FAVORITOS =================
 // ========================================================
 window.FAVORITOS = {
-    items: JSON.parse(localStorage.getItem('mis_favoritos')) || [],
+    items: [],
+    
+    init: function() {
+        try {
+            const stored = localStorage.getItem('mis_favoritos');
+            if (stored) {
+                const parsed = JSON.parse(stored);
+                // Filtrar items validos que tengan todas las propiedades necesarias
+                this.items = Array.isArray(parsed) ? parsed.filter(item => 
+                    item && item.id && item.nombre && item.precio !== undefined && item.imagen
+                ) : [];
+            } else {
+                this.items = [];
+            }
+        } catch(e) {
+            console.error('Error cargando favoritos:', e);
+            this.items = [];
+        }
+        this.save();
+    },
     
     add: function(productoId) {
         if (!window.PRODUCTOS) {
@@ -204,11 +223,16 @@ window.FAVORITOS = {
 
         container.innerHTML = '';
         
-        if(this.items.length === 0) {
-            emptyMsg.style.display = 'block';
+        // Filtrar items validos antes de renderizar
+        const validItems = this.items.filter(item => 
+            item && item.id && item.nombre && item.precio !== undefined && item.imagen
+        );
+        
+        if(validItems.length === 0) {
+            if(emptyMsg) emptyMsg.style.display = 'block';
         } else {
-            emptyMsg.style.display = 'none';
-            this.items.forEach(item => {
+            if(emptyMsg) emptyMsg.style.display = 'none';
+            validItems.forEach(item => {
                 const div = document.createElement('div');
                 div.style.display = 'flex';
                 div.style.alignItems = 'center';
@@ -231,9 +255,12 @@ window.FAVORITOS = {
     updateBadge: function() {
         const badge = document.getElementById('favBadge');
         if(badge) {
-            const total = this.items.length;
-            if(total > 0) {
-                badge.textContent = total;
+            // Contar solo items validos
+            const validCount = this.items.filter(item => 
+                item && item.id && item.nombre && item.precio !== undefined && item.imagen
+            ).length;
+            if(validCount > 0) {
+                badge.textContent = validCount;
                 badge.style.display = 'flex'; 
             } else {
                 badge.style.display = 'none'; 
@@ -259,8 +286,19 @@ window.FAVORITOS = {
         setTimeout(() => {
             notification.classList.remove('show');
         }, 3000);
+    },
+
+    addCurrentProduct: function() {
+        var params = new URLSearchParams(window.location.search);
+        var productId = params.get('id');
+        if (productId) {
+            this.add(productId);
+        }
     }
 };
+
+// Inicializar favoritos al cargar
+window.FAVORITOS.init();
 // ========== SHARED PAGE INITIALIZATION ==========
 window.initSharedUI = function() {
     var newsletterLinks = document.querySelectorAll('[data-action="newsletter"]');
@@ -627,150 +665,3 @@ window.enviarNewsletter = function() {
         console.error("Fallo EmailJS:", err);
     });
 };
-
-// ========================================================
-// ========== SISTEMA GLOBAL DE FAVORITOS =================
-// ========================================================
-window.FAVORITOS = {
-    items: (function() {
-        var guardados = JSON.parse(localStorage.getItem('mis_favoritos')) || [];
-        return guardados.map(item => typeof item === 'object' ? String(item.id) : String(item)).filter(Boolean);
-    })(),
-    
-    showNotification: function(msg) {
-        var existing = document.querySelector('.cart-notification');
-        if (existing) existing.remove();
-        var notif = document.createElement('div');
-        notif.className = 'cart-notification';
-        notif.textContent = msg;
-        document.body.appendChild(notif);
-        setTimeout(function() { notif.classList.add('show'); }, 10);
-        setTimeout(function() {
-            notif.classList.remove('show');
-            setTimeout(function() { notif.remove(); }, 300);
-        }, 2000);
-    },
-
-    add: function(id) {
-        if(!id) return;
-        id = String(id); 
-        if(!this.items.includes(id)) {
-            this.items.push(id);
-            this.save();
-            this.updateBadge(); // Suma el numerito
-            this.showNotification('¡Añadido a favoritos!');
-        } else {
-            this.showNotification('Este artículo ya está en favoritos');
-        }
-    },
-    
-    remove: function(id) {
-        id = String(id);
-        this.items = this.items.filter(itemId => itemId !== id);
-        this.save();
-        this.renderModal();
-        this.updateBadge(); // Resta el numerito
-    },
-    
-    save: function() {
-        localStorage.setItem('mis_favoritos', JSON.stringify(this.items));
-    },
-
-    updateBadge: function() {
-        var badge = document.getElementById('favBadge');
-        if(badge) {
-            var count = this.items.length;
-            badge.textContent = count;
-            badge.style.display = count > 0 ? 'flex' : 'none';
-        }
-    },
-    
-    renderModal: function() {
-        const container = document.getElementById('favItems');
-        const emptyMsg = document.getElementById('favEmpty');
-        if(!container) return;
-
-        container.innerHTML = '';
-        
-        if(this.items.length === 0) {
-            if(emptyMsg) emptyMsg.style.display = 'block';
-        } else {
-            if(emptyMsg) emptyMsg.style.display = 'none';
-            
-            this.items.forEach(id => {
-                if (!window.PRODUCTOS) return;
-                
-                // Busca los datos originales (la foto PNG, el nombre, etc.)
-                const prod = window.PRODUCTOS.find(p => String(p.id) === String(id));
-                if (!prod) return; 
-
-                const div = document.createElement('div');
-                div.style.display = 'flex';
-                div.style.alignItems = 'center';
-                div.style.borderBottom = '1px solid rgba(131, 7, 45, 0.2)';
-                div.style.padding = '15px 0';
-                
-                div.innerHTML = `
-                    <img src="${prod.imagen}" onerror="this.src='imagenes/placeholder-producto.svg'" style="width: 60px; height: 60px; object-fit: cover; margin-right: 15px; border-radius: 5px; border: 1px solid var(--gold);">
-                    <div style="flex: 1; text-align: left;">
-                        <h4 style="margin: 0 0 5px; font-family: 'Metamorphous', cursive; font-size: 15px; color: var(--wine);">${prod.nombre}</h4>
-                        <p style="margin: 0; font-family: 'MedievalSharp', cursive; font-size: 14px;">${prod.precio} &euro;</p>
-                    </div>
-                    <a href="producto.html?id=${prod.id}" style="margin-right: 15px; font-size: 13px; color: var(--wine); text-decoration: underline; font-family: 'Metamorphous', cursive;">Ver</a>
-                    <button onclick="window.FAVORITOS.remove('${prod.id}')" style="background: none; border: none; color: #cc0000; font-size: 24px; cursor: pointer;" title="Eliminar">&times;</button>
-                `;
-                container.appendChild(div);
-            });
-        }
-    }
-};
-
-// ========================================================
-// ========== EVENTOS DE FAVORITOS (GLOBAL) ===============
-// ========================================================
-document.addEventListener('DOMContentLoaded', function() {
-    // Al cargar la página, se actualiza el número
-    if (window.FAVORITOS) {
-        window.FAVORITOS.updateBadge();
-    }
-});
-
-document.addEventListener('click', function(e) {
-    // 1. Botón "Añadir a Favoritos" en la ficha de producto
-    if (e.target.closest('#addToFavBtn')) {
-        e.preventDefault();
-        var id = new URLSearchParams(window.location.search).get('id');
-        if (id) {
-            window.FAVORITOS.add(id);
-        }
-    }
-
-    // 2. Abrir la ventana de favoritos (Icono del corazón en el menú)
-    if (e.target.closest('#favBtn')) {
-        var favModal = document.getElementById('favModal');
-        if (favModal) {
-            window.FAVORITOS.renderModal();
-            favModal.classList.add('active');
-        }
-    }
-
-    // 3. Cerrar la ventana de favoritos (X)
-    if (e.target.closest('#favClose')) {
-        var favModalClose = document.getElementById('favModal');
-        if (favModalClose) favModalClose.classList.remove('active');
-    }
-
-    // 4. Cerrar haciendo clic en lo negro
-    var favModalTarget = document.getElementById('favModal');
-    if (e.target === favModalTarget) {
-        favModalTarget.classList.remove('active');
-    }
-});
-
-// Cerrar con Escape
-window.addEventListener('keydown', function(e) {
-    var favModal = document.getElementById('favModal');
-    if(e.key === 'Escape' && favModal && favModal.classList.contains('active')) {
-        favModal.classList.remove('active');
-    }
-});

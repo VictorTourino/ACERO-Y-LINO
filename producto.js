@@ -120,6 +120,38 @@ document.addEventListener('DOMContentLoaded', function() {
         CARRITO.updateBadge();
     }
 
+    // ========== FAVORITES MODAL ==========
+    var favModal = document.getElementById('favModal');
+    var favBtn = document.getElementById('favBtn');
+    var favClose = document.getElementById('favClose');
+
+    if (favBtn) {
+        favBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (favModal && window.FAVORITOS) {
+                FAVORITOS.renderModal();
+                favModal.classList.add('active');
+            }
+        });
+    }
+
+    if (favClose) {
+        favClose.addEventListener('click', function() {
+            if (favModal) favModal.classList.remove('active');
+        });
+    }
+
+    if (favModal) {
+        favModal.addEventListener('click', function(e) {
+            if (e.target === favModal) favModal.classList.remove('active');
+        });
+    }
+
+    // Update favorites badge on load
+    if (window.FAVORITOS) {
+        FAVORITOS.updateBadge();
+    }
+
     // ========== HAMBURGER MENU ==========
     var dropdownMenu = document.getElementById('dropdownMenu');
     var goldLine = document.getElementById('goldLine');
@@ -365,6 +397,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             if (cartModal && cartModal.classList.contains('active')) {
                 cartModal.classList.remove('active');
+            }
+            if (favModal && favModal.classList.contains('active')) {
+                favModal.classList.remove('active');
             }
             if (newsletterModal && newsletterModal.classList.contains('active')) {
                 newsletterModal.classList.remove('active');

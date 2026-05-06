@@ -73,7 +73,7 @@ header {
 
 /* ========== CART ICON BADGE ========== */
 .cart-wrapper { position: relative; display: inline-block; }
-.cart-badge {
+.cart-badge, .fav-badge {
     position: absolute; top: -6px; right: -8px;
     background-color: var(--wine); color: var(--white);
     font-family: 'Metamorphous', cursive; font-size: 10px;
