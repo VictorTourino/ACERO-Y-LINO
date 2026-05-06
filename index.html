@@ -323,67 +323,6 @@
         else{window.addEventListener("load",onLoad)}
     })();
     </script>
-
-    <script>
-        window.FAVORITOS = {
-            items: (function() {
-                var guardados = JSON.parse(localStorage.getItem('mis_favoritos')) || [];
-                return guardados.map(item => typeof item === 'object' ? String(item.id) : String(item)).filter(Boolean);
-            })(),
-            
-            save: function() { localStorage.setItem('mis_favoritos', JSON.stringify(this.items)); },
-            
-            renderModal: function() {
-                const container = document.getElementById('favItems');
-                const emptyMsg = document.getElementById('favEmpty');
-                if(!container) return;
-                container.innerHTML = '';
-                if(this.items.length === 0) {
-                    emptyMsg.style.display = 'block';
-                } else {
-                    emptyMsg.style.display = 'none';
-                    this.items.forEach(id => {
-                        if (!window.PRODUCTOS) return;
-                        const prod = window.PRODUCTOS.find(p => String(p.id) === String(id));
-                        if (!prod) return; 
-                        const div = document.createElement('div');
-                        div.style.display = 'flex';
-                        div.style.alignItems = 'center';
-                        div.style.borderBottom = '1px solid rgba(131, 7, 45, 0.2)';
-                        div.style.padding = '15px 0';
-                        div.innerHTML = `
-                            <img src="${prod.imagen}" onerror="this.src='imagenes/placeholder-producto.svg'" style="width: 60px; height: 60px; object-fit: cover; margin-right: 15px; border-radius: 5px; border: 1px solid var(--gold);">
-                            <div style="flex: 1; text-align: left;">
-                                <h4 style="margin: 0 0 5px; font-family: 'Metamorphous', cursive; font-size: 15px; color: var(--wine);">${prod.nombre}</h4>
-                                <p style="margin: 0; font-family: 'MedievalSharp', cursive; font-size: 14px;">${prod.precio} &euro;</p>
-                            </div>
-                            <a href="producto.html?id=${prod.id}" style="margin-right: 15px; font-size: 13px; color: var(--wine); text-decoration: underline; font-family: 'Metamorphous', cursive;">Ver</a>
-                            <button onclick="window.FAVORITOS.remove('${prod.id}')" style="background: none; border: none; color: #cc0000; font-size: 24px; cursor: pointer;">&times;</button>
-                        `;
-                        container.appendChild(div);
-                    });
-                }
-            },
-
-            remove: function(id) {
-                this.items = this.items.filter(itemId => itemId !== String(id));
-                this.save();
-                this.renderModal();
-            }
-        };
-
-        // Eventos de apertura de modales y clics
-        document.addEventListener('click', function(e) {
-            if (e.target.closest('#favBtn')) {
-                window.FAVORITOS.renderModal();
-                document.getElementById('favModal').classList.add('active');
-            }
-            if (e.target.closest('#favClose') || e.target.id === 'favModal') {
-                document.getElementById('favModal').classList.remove('active');
-            }
-        });
-    </script>
-
     <script>
         function abrirPasarela() {
             document.getElementById('cartModal').classList.remove('active');
@@ -532,29 +471,6 @@
         if(favClose) {
             favClose.addEventListener('click', function() {
                 favModal.classList.remove('active');
-            });
-        }
-
-        // Lógica del botón de "AÑADIR A FAVORITOS" en la ficha de producto (OPCIÓN B)
-        if(addToFavBtn) {
-            addToFavBtn.addEventListener('click', function() {
-                // 1. Obtenemos el ID de la URL
-                var productId = new URLSearchParams(window.location.search).get('id');
-                
-                // 2. Buscamos el producto en tu archivo productos-data.js
-                var productoEncontrado = window.PRODUCTOS.find(p => p.id === parseInt(productId));
-
-                // 3. Si lo encontramos, lo guardamos con los datos correctos
-                if(productoEncontrado) {
-                    window.FAVORITOS.add({
-                        id: productoEncontrado.id.toString(), 
-                        nombre: productoEncontrado.nombre,
-                        precio: productoEncontrado.precio,
-                        imagen: productoEncontrado.imagen
-                    });
-                } else {
-                    console.error("No se ha encontrado el producto.");
-                }
             });
         }
     });
