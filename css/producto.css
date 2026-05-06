@@ -827,14 +827,14 @@ footer {
 
 .footer-castle {
     position: absolute;
-    top: -55px; 
+    top: -150px; /* Ajusta este valor para subir o bajar el castillo */
     right: 5%;
-    display: block !important;
 }
 
 .footer-castle img {
-    height: 60px;
-    width: auto;
+    width: 300px;
+    height: auto; /* Esto mantiene las proporciones para que la imagen no se deforme */
+    max-width: 100%; /* Asegura que no se salga de la pantalla en móviles */
 }
 
 .footer-main-row {
@@ -964,7 +964,12 @@ footer {
         flex-direction: column;
         gap: 35px;
     }
+    
     .footer-castle {
-        top: -45px;
+        top: -100px; /* Lo subimos un poco menos que en PC */
+    }
+    
+    .footer-castle img {
+        width: 150px; /* En móvil lo hacemos un poco más pequeño para que no estorbe */
     }
 }
