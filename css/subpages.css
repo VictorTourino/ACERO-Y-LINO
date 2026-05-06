@@ -343,8 +343,9 @@ footer {
 }
 
 .footer-castle img {
-    height: 60px;
-    width: auto;
+    width: 300px;
+    height: auto; /* Esto mantiene las proporciones para que la imagen no se deforme */
+    max-width: 100%; /* Asegura que no se salga de la pantalla en móviles */
 }
 
 /* Contenedor principal: ESTO FUERZA LA LÍNEA HORIZONTAL */
