@@ -569,8 +569,37 @@ window.initSharedUI = function() {
 
 document.addEventListener('DOMContentLoaded', function() {
     if (window.initSharedUI) initSharedUI();
-});
+    
+    // Iniciar el numerito de Favoritos
+    if (window.FAVORITOS) {
+        window.FAVORITOS.updateBadge();
+    }
+    
+    // Eventos de la ventana Modal de Favoritos
+    var favBtn = document.getElementById('favBtn');
+    var favModal = document.getElementById('favModal');
+    var favClose = document.getElementById('favClose');
 
+    if (favBtn && favModal) {
+        favBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            window.FAVORITOS.renderModal();
+            favModal.classList.add('active');
+        });
+    }
+
+    if (favClose) {
+        favClose.addEventListener('click', function() {
+            if (favModal) favModal.classList.remove('active');
+        });
+    }
+
+    if (favModal) {
+        favModal.addEventListener('click', function(e) {
+            if (e.target === favModal) favModal.classList.remove('active');
+        });
+    }
+});
 window.enviarNewsletter = function() {
     console.log("¡Cuervo mensajero activado!");
     
