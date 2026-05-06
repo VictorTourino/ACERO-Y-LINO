@@ -155,7 +155,112 @@ window.CARRITO = {
         if (totalEl) totalEl.textContent = this.getTotal().toFixed(2);
     }
 };
+// ========================================================
+// ========== SISTEMA GLOBAL DE FAVORITOS =================
+// ========================================================
+window.FAVORITOS = {
+    items: JSON.parse(localStorage.getItem('mis_favoritos')) || [],
+    
+    add: function(productoId) {
+        if (!window.PRODUCTOS) {
+            console.error("Base de datos de productos no cargada.");
+            return;
+        }
 
+        const productoDb = window.PRODUCTOS.find(p => String(p.id) === String(productoId));
+        if(!productoDb) return;
+
+        const existe = this.items.find(item => String(item.id) === String(productoId));
+        if(!existe) {
+            this.items.push({
+                id: String(productoDb.id),
+                nombre: productoDb.nombre,
+                precio: productoDb.precio,
+                imagen: productoDb.imagen
+            });
+            this.save();
+            this.updateBadge(); 
+            this.showNotification('¡Añadido a tus favoritos, mi señor!'); 
+        } else {
+            this.showNotification('Este artículo ya se encuentra en tus favoritos.');
+        }
+    },
+    
+    remove: function(id) {
+        this.items = this.items.filter(item => String(item.id) !== String(id));
+        this.save();
+        this.renderModal(); 
+        this.updateBadge(); 
+    },
+    
+    save: function() {
+        localStorage.setItem('mis_favoritos', JSON.stringify(this.items));
+    },
+    
+    renderModal: function() {
+        const container = document.getElementById('favItems');
+        const emptyMsg = document.getElementById('favEmpty');
+        if(!container) return;
+
+        container.innerHTML = '';
+        
+        if(this.items.length === 0) {
+            emptyMsg.style.display = 'block';
+        } else {
+            emptyMsg.style.display = 'none';
+            this.items.forEach(item => {
+                const div = document.createElement('div');
+                div.style.display = 'flex';
+                div.style.alignItems = 'center';
+                div.style.borderBottom = '1px solid rgba(131, 7, 45, 0.2)';
+                div.style.padding = '15px 0';
+                div.innerHTML = `
+                    <img src="${item.imagen}" onerror="this.src='imagenes/placeholder-producto.svg'" style="width: 60px; height: 60px; object-fit: cover; margin-right: 15px; border-radius: 5px; border: 1px solid var(--gold);">
+                    <div style="flex: 1; text-align: left;">
+                        <h4 style="margin: 0 0 5px; font-family: 'Metamorphous', cursive; font-size: 15px; color: var(--wine);">${item.nombre}</h4>
+                        <p style="margin: 0; font-family: 'MedievalSharp', cursive; font-size: 14px;">${item.precio} &euro;</p>
+                    </div>
+                    <a href="producto.html?id=${item.id}" style="margin-right: 15px; font-size: 13px; color: var(--wine); text-decoration: underline; font-family: 'Metamorphous', cursive;">Ver</a>
+                    <button onclick="window.FAVORITOS.remove('${item.id}')" style="background: none; border: none; color: #cc0000; font-size: 24px; cursor: pointer;">&times;</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+    },
+
+    updateBadge: function() {
+        const badge = document.getElementById('favBadge');
+        if(badge) {
+            const total = this.items.length;
+            if(total > 0) {
+                badge.textContent = total;
+                badge.style.display = 'flex'; 
+            } else {
+                badge.style.display = 'none'; 
+            }
+        }
+    },
+
+    showNotification: function(msg) {
+        let notification = document.getElementById('favNotification');
+        if (!notification) {
+            notification = document.createElement('div');
+            notification.id = 'favNotification';
+            notification.className = 'cart-notification'; 
+            document.body.appendChild(notification);
+        }
+        notification.textContent = msg;
+        
+        notification.classList.remove('show');
+        void notification.offsetWidth; 
+        
+        notification.classList.add('show');
+        
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 3000);
+    }
+};
 // ========== SHARED PAGE INITIALIZATION ==========
 window.initSharedUI = function() {
     var newsletterLinks = document.querySelectorAll('[data-action="newsletter"]');
