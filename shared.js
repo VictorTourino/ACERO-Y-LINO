@@ -159,25 +159,16 @@ window.CARRITO = {
 // ========== SISTEMA GLOBAL DE FAVORITOS =================
 // ========================================================
 window.FAVORITOS = {
-    items: [],
-    
-    init: function() {
+    getItems: function() {
         try {
-            const stored = localStorage.getItem('mis_favoritos');
-            if (stored) {
-                const parsed = JSON.parse(stored);
-                // Filtrar items validos que tengan todas las propiedades necesarias
-                this.items = Array.isArray(parsed) ? parsed.filter(item => 
-                    item && item.id && item.nombre && item.precio !== undefined && item.imagen
-                ) : [];
-            } else {
-                this.items = [];
-            }
-        } catch(e) {
-            console.error('Error cargando favoritos:', e);
-            this.items = [];
-        }
-        this.save();
+            var items = JSON.parse(localStorage.getItem('aceroylino_favoritos') || '[]');
+            return Array.isArray(items) ? items : [];
+        } catch(e) { return []; }
+    },
+
+    saveItems: function(items) {
+        localStorage.setItem('aceroylino_favoritos', JSON.stringify(items));
+        this.updateBadge();
     },
     
     add: function(productoId) {
@@ -186,106 +177,98 @@ window.FAVORITOS = {
             return;
         }
 
-        const productoDb = window.PRODUCTOS.find(p => String(p.id) === String(productoId));
+        var productoDb = window.PRODUCTOS.find(function(p) { return String(p.id) === String(productoId); });
         if(!productoDb) return;
 
-        const existe = this.items.find(item => String(item.id) === String(productoId));
+        var items = this.getItems();
+        var existe = items.find(function(item) { return String(item.id) === String(productoId); });
+        
         if(!existe) {
-            this.items.push({
+            items.push({
                 id: String(productoDb.id),
                 nombre: productoDb.nombre,
                 precio: productoDb.precio,
                 imagen: productoDb.imagen
             });
-            this.save();
-            this.updateBadge(); 
-            this.showNotification('¡Añadido a tus favoritos, mi señor!'); 
+            this.saveItems(items);
+            this.showNotification('Añadido a tus favoritos'); 
         } else {
-            this.showNotification('Este artículo ya se encuentra en tus favoritos.');
+            this.showNotification('Este articulo ya esta en favoritos.');
         }
     },
     
     remove: function(id) {
-        this.items = this.items.filter(item => String(item.id) !== String(id));
-        this.save();
+        var items = this.getItems().filter(function(item) { return String(item.id) !== String(id); });
+        this.saveItems(items);
         this.renderModal(); 
-        this.updateBadge(); 
     },
     
-    save: function() {
-        localStorage.setItem('mis_favoritos', JSON.stringify(this.items));
+    getCount: function() {
+        return this.getItems().length;
     },
     
     renderModal: function() {
-        const container = document.getElementById('favItems');
-        const emptyMsg = document.getElementById('favEmpty');
+        var container = document.getElementById('favItems');
+        var emptyMsg = document.getElementById('favEmpty');
         if(!container) return;
 
         container.innerHTML = '';
+        var items = this.getItems();
         
-        // Filtrar items validos antes de renderizar
-        const validItems = this.items.filter(item => 
-            item && item.id && item.nombre && item.precio !== undefined && item.imagen
-        );
-        
-        if(validItems.length === 0) {
+        if(items.length === 0) {
             if(emptyMsg) emptyMsg.style.display = 'block';
         } else {
             if(emptyMsg) emptyMsg.style.display = 'none';
-            validItems.forEach(item => {
-                const div = document.createElement('div');
+            var self = this;
+            items.forEach(function(item) {
+                var div = document.createElement('div');
                 div.style.display = 'flex';
                 div.style.alignItems = 'center';
                 div.style.borderBottom = '1px solid rgba(131, 7, 45, 0.2)';
                 div.style.padding = '15px 0';
-                div.innerHTML = `
-                    <img src="${item.imagen}" onerror="this.src='imagenes/placeholder-producto.svg'" style="width: 60px; height: 60px; object-fit: cover; margin-right: 15px; border-radius: 5px; border: 1px solid var(--gold);">
-                    <div style="flex: 1; text-align: left;">
-                        <h4 style="margin: 0 0 5px; font-family: 'Metamorphous', cursive; font-size: 15px; color: var(--wine);">${item.nombre}</h4>
-                        <p style="margin: 0; font-family: 'MedievalSharp', cursive; font-size: 14px;">${item.precio} &euro;</p>
-                    </div>
-                    <a href="producto.html?id=${item.id}" style="margin-right: 15px; font-size: 13px; color: var(--wine); text-decoration: underline; font-family: 'Metamorphous', cursive;">Ver</a>
-                    <button onclick="window.FAVORITOS.remove('${item.id}')" style="background: none; border: none; color: #cc0000; font-size: 24px; cursor: pointer;">&times;</button>
-                `;
+                div.innerHTML = 
+                    '<img src="' + item.imagen + '" onerror="this.src=\'imagenes/placeholder-producto.svg\'" style="width: 60px; height: 60px; object-fit: cover; margin-right: 15px; border-radius: 5px; border: 1px solid var(--gold);">' +
+                    '<div style="flex: 1; text-align: left;">' +
+                        '<h4 style="margin: 0 0 5px; font-family: \'Metamorphous\', cursive; font-size: 15px; color: var(--wine);">' + item.nombre + '</h4>' +
+                        '<p style="margin: 0; font-family: \'MedievalSharp\', cursive; font-size: 14px;">' + item.precio + ' &euro;</p>' +
+                    '</div>' +
+                    '<a href="producto.html?id=' + item.id + '" style="margin-right: 15px; font-size: 13px; color: var(--wine); text-decoration: underline; font-family: \'Metamorphous\', cursive;">Ver</a>' +
+                    '<button data-fav-remove="' + item.id + '" style="background: none; border: none; color: #cc0000; font-size: 24px; cursor: pointer;">&times;</button>';
                 container.appendChild(div);
             });
+            
+            // Event delegation for remove buttons
+            container.onclick = function(e) {
+                var btn = e.target.closest('[data-fav-remove]');
+                if (btn) {
+                    var id = btn.getAttribute('data-fav-remove');
+                    self.remove(id);
+                }
+            };
         }
     },
 
     updateBadge: function() {
-        const badge = document.getElementById('favBadge');
+        var badge = document.getElementById('favBadge');
+        var count = this.getCount();
         if(badge) {
-            // Contar solo items validos
-            const validCount = this.items.filter(item => 
-                item && item.id && item.nombre && item.precio !== undefined && item.imagen
-            ).length;
-            if(validCount > 0) {
-                badge.textContent = validCount;
-                badge.style.display = 'flex'; 
-            } else {
-                badge.style.display = 'none'; 
-            }
+            badge.textContent = count;
+            badge.style.display = count > 0 ? 'flex' : 'none';
         }
     },
 
     showNotification: function(msg) {
-        let notification = document.getElementById('favNotification');
-        if (!notification) {
-            notification = document.createElement('div');
-            notification.id = 'favNotification';
-            notification.className = 'cart-notification'; 
-            document.body.appendChild(notification);
-        }
-        notification.textContent = msg;
-        
-        notification.classList.remove('show');
-        void notification.offsetWidth; 
-        
-        notification.classList.add('show');
-        
-        setTimeout(() => {
-            notification.classList.remove('show');
-        }, 3000);
+        var existing = document.querySelector('.cart-notification');
+        if (existing) existing.remove();
+        var notif = document.createElement('div');
+        notif.className = 'cart-notification';
+        notif.textContent = msg;
+        document.body.appendChild(notif);
+        setTimeout(function() { notif.classList.add('show'); }, 10);
+        setTimeout(function() {
+            notif.classList.remove('show');
+            setTimeout(function() { notif.remove(); }, 300);
+        }, 2000);
     },
 
     addCurrentProduct: function() {
@@ -297,8 +280,8 @@ window.FAVORITOS = {
     }
 };
 
-// Inicializar favoritos al cargar
-window.FAVORITOS.init();
+// Inicializar badge de favoritos al cargar
+window.FAVORITOS.updateBadge();
 // ========== SHARED PAGE INITIALIZATION ==========
 window.initSharedUI = function() {
     var newsletterLinks = document.querySelectorAll('[data-action="newsletter"]');

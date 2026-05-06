@@ -22,7 +22,7 @@
                 <img src="imagenes/lupa.png" alt="Buscar" id="searchBtn">
                 <div class="cart-wrapper" id="favBtn" style="cursor: pointer;">
                     <img src="imagenes/corazon.png" alt="Favoritos">
-                    <span class="fav-badge" id="favBadge">0</span>
+                    <span class="fav-badge" id="favBadge" style="display: none;">0</span>
                 </div>
                 <img src="imagenes/usuario.png" alt="Usuario" id="userBtn">
                 <div class="cart-wrapper">
@@ -170,8 +170,8 @@
     </div>
 
     <div class="search-modal" id="welcomePopupModal">
-        <div class="search-container popup-container" style="max-width: 650px; padding: 0; overflow: hidden; border: none; background-color: var(--white);">
-            <button class="search-close" id="welcomePopupClose" style="z-index: 10; top: 5px; right: 10px; color: #000; font-weight: bold; font-size: 35px; line-height: 1;">&times;</button>
+        <div class="search-container popup-container" style="max-width: 650px; padding: 0; overflow: hidden; border: none; background-color: var(--white); position: relative;">
+            <button class="search-close" id="welcomePopupClose">&times;</button>
             <div class="popup-content-wrapper">
                 <div class="popup-gold-border"></div>
                 <div class="popup-main-content">
@@ -194,13 +194,13 @@
                         <p id="popupMsg" style="font-family: 'MedievalSharp', cursive; font-size: 13px; text-align: center; margin-top: 10px; min-height: 18px;"></p>
                     </div>
                 </div>
-                <div class="popup-gold-border"></div>
             </div>
         </div>
     </div>
 
     <section class="hero">
         <div class="hero-content">
+            <p class="hero-tagline">Encuentra tu ropa, complementos y armaduras para rol en vivo totalmente personalizables</p>
             <h2>Déjate sorprender por nuestro servicio de personalización</h2>
             <button class="btn-primary" onclick="document.getElementById('seccion-ofertas').scrollIntoView({behavior: 'smooth'})">DESCUBRIR</button>
         </div>
