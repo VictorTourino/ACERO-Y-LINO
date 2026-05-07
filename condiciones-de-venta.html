@@ -5,6 +5,7 @@
     <title>ACERO Y LINO - Condiciones de Venta</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/styles.css"> <!-- AÑADIDO EL CSS PRINCIPAL -->
     <link rel="stylesheet" href="css/subpages.css">
     <link rel="shortcut icon" href="imagenes/fondo-favicon(32x32).png" type="image/x-icon">
 </head>
@@ -44,8 +45,37 @@
             </ul>
         </nav>
     </header>
-    <div class="search-modal" id="searchModal"><div class="search-container"><button class="search-close" id="searchClose">&times;</button><h3>BUSCAR PRODUCTOS</h3><input type="text" id="searchInput" placeholder="Escribe tu busqueda..." autocomplete="off"><div id="searchResults" class="search-results"></div></div></div>
-    <div class="search-modal" id="loginModal"><div class="search-container login-container"><button class="search-close" id="loginClose">&times;</button><div id="loginForm"><h3>INICIAR SESION</h3><input type="email" id="loginEmail" placeholder="Email" autocomplete="email"><input type="password" id="loginPassword" placeholder="Contrasena" autocomplete="current-password"><button id="loginSubmit" class="login-btn">ENTRAR</button><p id="loginError" class="login-error"></p></div><div id="userInfo" style="display:none;"><h3>MI CUENTA</h3><div class="user-welcome"><svg class="user-avatar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg><p id="welcomeText"></p></div><button id="logoutBtn" class="login-btn logout-btn">CERRAR SESION</button></div></div></div>
+
+    <div class="search-modal" id="searchModal">
+        <div class="search-container">
+            <button class="search-close" id="searchClose">&times;</button>
+            <h3>BUSCAR PRODUCTOS</h3>
+            <input type="text" id="searchInput" placeholder="Escribe tu busqueda..." autocomplete="off">
+            <div id="searchResults" class="search-results"></div>
+        </div>
+    </div>
+
+    <div class="search-modal" id="loginModal">
+        <div class="search-container login-container">
+            <button class="search-close" id="loginClose">&times;</button>
+            <div id="loginForm">
+                <h3>INICIAR SESION</h3>
+                <input type="email" id="loginEmail" placeholder="Email" autocomplete="email">
+                <input type="password" id="loginPassword" placeholder="Contrasena" autocomplete="current-password">
+                <button id="loginSubmit" class="login-btn">ENTRAR</button>
+                <p id="loginError" class="login-error"></p>
+            </div>
+            <div id="userInfo" style="display:none;">
+                <h3>MI CUENTA</h3>
+                <div class="user-welcome">
+                    <svg class="user-avatar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+                    <p id="welcomeText"></p>
+                </div>
+                <button id="logoutBtn" class="login-btn logout-btn">CERRAR SESION</button>
+            </div>
+        </div>
+    </div>
+    
     <div class="search-modal" id="cartModal">
         <div class="search-container">
             <button class="search-close" id="cartClose">&times;</button>
@@ -117,7 +147,18 @@
             </div>
         </div>
     </div>
-    <div class="search-modal" id="newsletterModal"><div class="search-container"><button class="search-close" id="newsletterClose">&times;</button><h3>NEWSLETTER</h3><p style="font-family:'MedievalSharp',cursive;text-align:center;margin-bottom:15px;font-size:14px;">Suscribete para recibir las ultimas novedades y ofertas exclusivas.</p><input type="email" id="newsletterEmail" placeholder="Tu correo electronico..." autocomplete="email"><button id="newsletterSubmit" class="login-btn" style="margin-top:15px;">SUSCRIBIRSE</button><p id="newsletterMsg" style="font-family:'MedievalSharp',cursive;font-size:13px;text-align:center;margin-top:10px;min-height:18px;"></p></div></div>
+    
+    <div class="search-modal" id="newsletterModal">
+        <div class="search-container">
+            <button class="search-close" id="newsletterClose">&times;</button>
+            <h3>NEWSLETTER</h3>
+            <p style="font-family:'MedievalSharp',cursive;text-align:center;margin-bottom:15px;font-size:14px;">Suscribete para recibir las ultimas novedades y ofertas exclusivas.</p>
+            <input type="email" id="newsletterEmail" placeholder="Tu correo electronico..." autocomplete="email">
+            <!-- AÑADIDO EL WIDTH 100% AL BOTÓN -->
+            <button id="newsletterSubmit" class="login-btn" style="margin-top:15px; width: 100%;">SUSCRIBIRSE</button>
+            <p id="newsletterMsg" style="font-family:'MedievalSharp',cursive;font-size:13px;text-align:center;margin-top:10px;min-height:18px;"></p>
+        </div>
+    </div>
 
     <section class="page-hero"><h1>CONDICIONES DE VENTA</h1></section>
     
@@ -153,7 +194,7 @@
         <p>No obstante, este derecho no será aplicable a productos personalizados, perecederos y / o a determinados productos, por razones de higiene, una vez retirados del precinto.</p>
 
         <h2>Devoluciones y reembolsos</h2>
-        <p>Al recibir en nuestros almacenes el producto devuelto, si se confirma que el defecto del producto entra dentro de los recogidos por la legislación, procederemos a realizar el reembolso correspondiente mediante el método de pago empleado por el cliente. Los gastos de devolución correrán a cargo del cliente, salvo que el error sea atribuible a la empresa “Acero y Lino���. El plazo máximo para el reembolso es de 14 días naturales a partir de la recepción de la devolución del producto.</p>
+        <p>Al recibir en nuestros almacenes el producto devuelto, si se confirma que el defecto del producto entra dentro de los recogidos por la legislación, procederemos a realizar el reembolso correspondiente mediante el método de pago empleado por el cliente. Los gastos de devolución correrán a cargo del cliente, salvo que el error sea atribuible a la empresa “Acero y Lino”. El plazo máximo para el reembolso es de 14 días naturales a partir de la recepción de la devolución del producto.</p>
 
         <h2>Garantías legales</h2>
         <p>Todos los productos que vendemos cuentan con una garantía legal de 2 años por defectos de fabricación conforme a la legislación vigente en esta materia.</p>
@@ -215,24 +256,29 @@
             <p>&copy; 2026 Acero y Lino. Todos los derechos reservados.</p>
         </div>
     </footer>
-    <script src="scriptado.js"></script>
+
+    <!-- 1. EmailJS -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script>
         (function(){ emailjs.init("LTN7YEhJohhjCwtau"); })();
     </script>
-    <script src="/productos-data.js"></script><script src="/shared.js"></script>
+
+    <!-- 2. Archivos locales en el orden correcto SIN las barras delante -->
+    <script src="productos-data.js"></script>
+    <script src="shared.js"></script>
+    <script src="scriptado.js"></script>
+    
     <script>document.addEventListener('DOMContentLoaded', function() { if (window.initSharedUI) initSharedUI(); });</script>
+    
+    <!-- 3. Pasarela -->
     <script>
         function abrirPasarela() {
-            // Cerramos el carrito si está abierto
             var cartModal = document.getElementById('cartModal');
             if(cartModal) cartModal.classList.remove('active');
             
-            // Mostramos la pasarela
             var checkoutModal = document.getElementById('checkoutModal');
             if(checkoutModal) {
                 checkoutModal.classList.add('active');
-                // Reseteamos las vistas por si el usuario entra varias veces
                 document.getElementById('checkoutFormContainer').style.display = 'block';
                 document.getElementById('checkoutSuccess').style.display = 'none';
             }
@@ -248,14 +294,12 @@
             var formCard = document.getElementById('formCard');
             var formPaypal = document.getElementById('formPaypal');
 
-            // Cerrar el modal con la X
             if(checkoutClose) {
                 checkoutClose.addEventListener('click', function() {
                     checkoutModal.classList.remove('active');
                 });
             }
 
-            // Alternar entre Tarjeta y PayPal
             if(radioCard && radioPaypal) {
                 radioCard.addEventListener('change', function() {
                     formCard.style.display = 'block';
@@ -267,33 +311,27 @@
                 });
             }
 
-            // Simular el pago exitoso al darle a PAGAR AHORA
             if(paySubmitBtn) {
                 paySubmitBtn.addEventListener('click', function() {
-                    // Ocultar formulario y mostrar mensaje de éxito
                     document.getElementById('checkoutFormContainer').style.display = 'none';
                     document.getElementById('checkoutSuccess').style.display = 'block';
 
-                    // Vaciar el carrito de verdad usando tu objeto global CARRITO
                     if(window.CARRITO) {
                         window.CARRITO.clear();
                         window.CARRITO.renderModal();
                     }
 
-                    // Cerrar la ventana automáticamente tras 5 segundos
                     setTimeout(function() {
                         checkoutModal.classList.remove('active');
                     }, 5000);
                 });
             }
 
-            // Cerrar clicando fuera del recuadro
             window.addEventListener('click', function(e) {
                 if (e.target === checkoutModal) {
                     checkoutModal.classList.remove('active');
                 }
             });
-            // Cerrar con la tecla Escape
             window.addEventListener('keydown', function(e) {
                 if(e.key === 'Escape' && checkoutModal && checkoutModal.classList.contains('active')) {
                     checkoutModal.classList.remove('active');
@@ -302,132 +340,131 @@
         });
     </script>
 
+    <!-- 4. Chatbase -->
     <script>
-(function(){
-    if(!window.chatbase||window.chatbase("getState")!=="initialized"){
-        // Hemos cambiado 'arguments' por 'args' aquí
-        window.chatbase=(...args)=>{
-            if(!window.chatbase.q){window.chatbase.q=[]}
-            window.chatbase.q.push(args) // Y aquí
+    (function(){
+        if(!window.chatbase||window.chatbase("getState")!=="initialized"){
+            window.chatbase=(...args)=>{
+                if(!window.chatbase.q){window.chatbase.q=[]}
+                window.chatbase.q.push(args)
+            };
+            window.chatbase=new Proxy(window.chatbase,{
+                get(target,prop){
+                    if(prop==="q"){return target.q}
+                    return(...args)=>target(prop,...args)
+                }
+            })
+        }
+        const onLoad=function(){
+            const script=document.createElement("script");
+            script.src="https://www.chatbase.co/embed.min.js";
+            script.id="a_VMRF0xeOV1NCusz4sqj";
+            script.domain="www.chatbase.co";
+            document.body.appendChild(script)
         };
-        window.chatbase=new Proxy(window.chatbase,{
-            get(target,prop){
-                if(prop==="q"){return target.q}
-                return(...args)=>target(prop,...args)
-            }
-        })
-    }
-    const onLoad=function(){
-        const script=document.createElement("script");
-        script.src="https://www.chatbase.co/embed.min.js";
-        script.id="a_VMRF0xeOV1NCusz4sqj";
-        script.domain="www.chatbase.co";
-        document.body.appendChild(script)
-    };
-    if(document.readyState==="complete"){onLoad()}
-    else{window.addEventListener("load",onLoad)}
-})();
-</script>
+        if(document.readyState==="complete"){onLoad()}
+        else{window.addEventListener("load",onLoad)}
+    })();
+    </script>
 
+    <!-- 5. Lógica Favoritos -->
     <script>
         window.FAVORITOS = {
-    // Extraemos las IDs y las forzamos a ser Texto
-    items: (function() {
-        var guardados = JSON.parse(localStorage.getItem('mis_favoritos')) || [];
-        return guardados.map(item => typeof item === 'object' ? String(item.id) : String(item)).filter(Boolean);
-    })(),
+            items: (function() {
+                var guardados = JSON.parse(localStorage.getItem('mis_favoritos')) || [];
+                return guardados.map(item => typeof item === 'object' ? String(item.id) : String(item)).filter(Boolean);
+            })(),
 
-    // --- 1. NUEVO: Función para actualizar el globito rojo ---
-    updateBadge: function() {
-        var badge = document.getElementById('favBadge');
-        if(badge) {
-            var total = this.items.length;
-            if(total > 0) {
-                badge.textContent = total;
-                badge.style.display = 'flex'; // Muestra el número
-            } else {
-                badge.style.display = 'none'; // Oculta el globito si hay 0
-            }
-        }
-    },
+            updateBadge: function() {
+                var badge = document.getElementById('favBadge');
+                if(badge) {
+                    var total = this.items.length;
+                    if(total > 0) {
+                        badge.textContent = total;
+                        badge.style.display = 'flex'; 
+                    } else {
+                        badge.style.display = 'none'; 
+                    }
+                }
+            },
 
-    showNotification: function(msg) {
-        var existing = document.querySelector('.cart-notification');
-        if (existing) existing.remove();
-        var notif = document.createElement('div');
-        notif.className = 'cart-notification';
-        notif.textContent = msg;
-        document.body.appendChild(notif);
-        setTimeout(function() { notif.classList.add('show'); }, 10);
-        setTimeout(function() {
-            notif.classList.remove('show');
-            setTimeout(function() { notif.remove(); }, 300);
-        }, 2000);
-    },
+            showNotification: function(msg) {
+                var existing = document.querySelector('.cart-notification');
+                if (existing) existing.remove();
+                var notif = document.createElement('div');
+                notif.className = 'cart-notification';
+                notif.textContent = msg;
+                document.body.appendChild(notif);
+                setTimeout(function() { notif.classList.add('show'); }, 10);
+                setTimeout(function() {
+                    notif.classList.remove('show');
+                    setTimeout(function() { notif.remove(); }, 300);
+                }, 2000);
+            },
 
-    add: function(id) {
-        if(!id) return;
-        id = String(id);
-        if(!this.items.includes(id)) {
-            this.items.push(id);
-            this.save();
-            this.updateBadge(); // --- 2. NUEVO: Actualiza al añadir ---
-            this.showNotification('¡Añadido a favoritos!');
-        } else {
-            this.showNotification('Este artículo ya está en favoritos');
-        }
-    },
-    
-    remove: function(id) {
-        id = String(id);
-        this.items = this.items.filter(itemId => itemId !== id);
-        this.save();
-        this.renderModal();
-        this.updateBadge(); // --- 3. NUEVO: Actualiza al quitar ---
-    },
-    
-    save: function() {
-        localStorage.setItem('mis_favoritos', JSON.stringify(this.items));
-    },
-    
-    renderModal: function() {
-        const container = document.getElementById('favItems');
-        const emptyMsg = document.getElementById('favEmpty');
-        if(!container) return;
-
-        container.innerHTML = '';
-        
-        if(this.items.length === 0) {
-            emptyMsg.style.display = 'block';
-        } else {
-            emptyMsg.style.display = 'none';
+            add: function(id) {
+                if(!id) return;
+                id = String(id);
+                if(!this.items.includes(id)) {
+                    this.items.push(id);
+                    this.save();
+                    this.updateBadge(); 
+                    this.showNotification('¡Añadido a favoritos!');
+                } else {
+                    this.showNotification('Este artículo ya está en favoritos');
+                }
+            },
             
-            this.items.forEach(id => {
-                if (!window.PRODUCTOS) return;
-                
-                const prod = window.PRODUCTOS.find(p => String(p.id) === String(id));
-                if (!prod) return; 
+            remove: function(id) {
+                id = String(id);
+                this.items = this.items.filter(itemId => itemId !== id);
+                this.save();
+                this.renderModal();
+                this.updateBadge(); 
+            },
+            
+            save: function() {
+                localStorage.setItem('mis_favoritos', JSON.stringify(this.items));
+            },
+            
+            renderModal: function() {
+                const container = document.getElementById('favItems');
+                const emptyMsg = document.getElementById('favEmpty');
+                if(!container) return;
 
-                const div = document.createElement('div');
-                div.style.display = 'flex';
-                div.style.alignItems = 'center';
-                div.style.borderBottom = '1px solid rgba(131, 7, 45, 0.2)';
-                div.style.padding = '15px 0';
+                container.innerHTML = '';
                 
-                div.innerHTML = `
-                    <img src="${prod.imagen}" onerror="this.src='imagenes/placeholder-producto.svg'" style="width: 60px; height: 60px; object-fit: cover; margin-right: 15px; border-radius: 5px; border: 1px solid var(--gold);">
-                    <div style="flex: 1; text-align: left;">
-                        <h4 style="margin: 0 0 5px; font-family: 'Metamorphous', cursive; font-size: 15px; color: var(--wine);">${prod.nombre}</h4>
-                        <p style="margin: 0; font-family: 'MedievalSharp', cursive; font-size: 14px;">${prod.precio} &euro;</p>
-                    </div>
-                    <a href="producto.html?id=${prod.id}" style="margin-right: 15px; font-size: 13px; color: var(--wine); text-decoration: underline; font-family: 'Metamorphous', cursive;">Ver</a>
-                    <button onclick="window.FAVORITOS.remove('${prod.id}')" style="background: none; border: none; color: #cc0000; font-size: 24px; cursor: pointer;" title="Eliminar">&times;</button>
-                `;
-                container.appendChild(div);
-            });
-        }
-    }
-};
+                if(this.items.length === 0) {
+                    emptyMsg.style.display = 'block';
+                } else {
+                    emptyMsg.style.display = 'none';
+                    
+                    this.items.forEach(id => {
+                        if (!window.PRODUCTOS) return;
+                        
+                        const prod = window.PRODUCTOS.find(p => String(p.id) === String(id));
+                        if (!prod) return; 
+
+                        const div = document.createElement('div');
+                        div.style.display = 'flex';
+                        div.style.alignItems = 'center';
+                        div.style.borderBottom = '1px solid rgba(131, 7, 45, 0.2)';
+                        div.style.padding = '15px 0';
+                        
+                        div.innerHTML = `
+                            <img src="${prod.imagen}" onerror="this.src='imagenes/placeholder-producto.svg'" style="width: 60px; height: 60px; object-fit: cover; margin-right: 15px; border-radius: 5px; border: 1px solid var(--gold);">
+                            <div style="flex: 1; text-align: left;">
+                                <h4 style="margin: 0 0 5px; font-family: 'Metamorphous', cursive; font-size: 15px; color: var(--wine);">${prod.nombre}</h4>
+                                <p style="margin: 0; font-family: 'MedievalSharp', cursive; font-size: 14px;">${prod.precio} &euro;</p>
+                            </div>
+                            <a href="producto.html?id=${prod.id}" style="margin-right: 15px; font-size: 13px; color: var(--wine); text-decoration: underline; font-family: 'Metamorphous', cursive;">Ver</a>
+                            <button onclick="window.FAVORITOS.remove('${prod.id}')" style="background: none; border: none; color: #cc0000; font-size: 24px; cursor: pointer;" title="Eliminar">&times;</button>
+                        `;
+                        container.appendChild(div);
+                    });
+                }
+            }
+        };
 
         document.addEventListener('click', function(e) {
             if (e.target.closest('#addToFavBtn')) {
@@ -456,11 +493,11 @@
                 favModal.classList.remove('active');
             }
         });
+        
         document.addEventListener('DOMContentLoaded', function() {
-    // Al cargar la página, le decimos que pinte el número actual
-        if(window.FAVORITOS) {
-            window.FAVORITOS.updateBadge();
-        }
+            if(window.FAVORITOS) {
+                window.FAVORITOS.updateBadge();
+            }
         });
 
         window.addEventListener('keydown', function(e) {
