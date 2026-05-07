@@ -89,18 +89,10 @@
             <div id="cartEmpty" class="cart-empty-msg">Tu carrito esta vacio.</div>
             <div id="cartItems"></div>
             <div id="cartActions" style="display:none;">
-                <div class="cart-total-row" style="font-size: 14px; color: #666;">
-    <span class="cart-total-label">Subtotal:</span>
-    <span class="cart-total-amount"><span id="cartSubtotal">0</span> &euro;</span>
-</div>
-<div class="cart-total-row" style="font-size: 14px; color: #666; border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 10px;">
-    <span class="cart-total-label">Gastos de Envío:</span>
-    <span class="cart-total-amount"><span id="cartEnvio">5.00</span> &euro;</span>
-</div>
-<div class="cart-total-row">
-    <span class="cart-total-label">TOTAL FINAL:</span>
-    <span class="cart-total-amount"><span id="cartTotal">0</span> &euro;</span>
-</div>
+                <div class="cart-total-row">
+                    <span class="cart-total-label">TOTAL:</span>
+                    <span class="cart-total-amount"><span id="cartTotal">0</span> &euro;</span>
+                </div>
                 <div class="cart-actions">
                     <button class="btn-clear-cart" id="clearCartBtn">VACIAR</button>
                     <button class="btn-checkout" onclick="abrirPasarela()">COMPRAR</button>
@@ -108,7 +100,6 @@
             </div>
         </div>
     </div>
-
     <div class="search-modal" id="favModal">
         <div class="search-container">
             <button class="search-close" id="favClose">&times;</button>
