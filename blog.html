@@ -262,74 +262,7 @@
     <script src="shared.js"></script>
     <script src="scriptado.js"></script>
     <script>document.addEventListener('DOMContentLoaded', function() { if (window.initSharedUI) initSharedUI(); });</script>
-    <script>
-        function abrirPasarela() {
-            var cartModal = document.getElementById('cartModal');
-            if(cartModal) cartModal.classList.remove('active');
-            
-            var checkoutModal = document.getElementById('checkoutModal');
-            if(checkoutModal) {
-                checkoutModal.classList.add('active');
-                document.getElementById('checkoutFormContainer').style.display = 'block';
-                document.getElementById('checkoutSuccess').style.display = 'none';
-            }
-        }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            var checkoutModal = document.getElementById('checkoutModal');
-            var checkoutClose = document.getElementById('checkoutClose');
-            var paySubmitBtn = document.getElementById('paySubmitBtn');
-            
-            var radioCard = document.getElementById('radioCard');
-            var radioPaypal = document.getElementById('radioPaypal');
-            var formCard = document.getElementById('formCard');
-            var formPaypal = document.getElementById('formPaypal');
-
-            if(checkoutClose) {
-                checkoutClose.addEventListener('click', function() {
-                    checkoutModal.classList.remove('active');
-                });
-            }
-
-            if(radioCard && radioPaypal) {
-                radioCard.addEventListener('change', function() {
-                    formCard.style.display = 'block';
-                    formPaypal.style.display = 'none';
-                });
-                radioPaypal.addEventListener('change', function() {
-                    formCard.style.display = 'none';
-                    formPaypal.style.display = 'block';
-                });
-            }
-
-            if(paySubmitBtn) {
-                paySubmitBtn.addEventListener('click', function() {
-                    document.getElementById('checkoutFormContainer').style.display = 'none';
-                    document.getElementById('checkoutSuccess').style.display = 'block';
-
-                    if(window.CARRITO) {
-                        window.CARRITO.clear();
-                        window.CARRITO.renderModal();
-                    }
-
-                    setTimeout(function() {
-                        checkoutModal.classList.remove('active');
-                    }, 5000);
-                });
-            }
-
-            window.addEventListener('click', function(e) {
-                if (e.target === checkoutModal) {
-                    checkoutModal.classList.remove('active');
-                }
-            });
-            window.addEventListener('keydown', function(e) {
-                if(e.key === 'Escape' && checkoutModal && checkoutModal.classList.contains('active')) {
-                    checkoutModal.classList.remove('active');
-                }
-            });
-        });
-    </script>
 
     <script>
 (function(){

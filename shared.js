@@ -687,3 +687,71 @@ window.enviarNewsletter = function() {
         console.error("Fallo EmailJS:", err);
     });
 };
+// ========================================================
+// ========== PASARELA DE PAGO (BLINDADA) =================
+// ========================================================
+
+// 1. Función para abrir la pasarela
+window.abrirPasarela = function() {
+    var cartModal = document.getElementById('cartModal');
+    if(cartModal) cartModal.classList.remove('active');
+    
+    var checkoutModal = document.getElementById('checkoutModal');
+    if(checkoutModal) {
+        checkoutModal.classList.add('active');
+        var formContainer = document.getElementById('checkoutFormContainer');
+        var successMsg = document.getElementById('checkoutSuccess');
+        
+        if (formContainer) formContainer.style.display = 'block';
+        if (successMsg) successMsg.style.display = 'none';
+    }
+};
+
+// 2. Controlar los botones de Tarjeta y PayPal
+document.addEventListener('change', function(e) {
+    if (e.target.id === 'radioCard') {
+        var formCard = document.getElementById('formCard');
+        var formPaypal = document.getElementById('formPaypal');
+        if(formCard) formCard.style.display = 'block';
+        if(formPaypal) formPaypal.style.display = 'none';
+    } 
+    else if (e.target.id === 'radioPaypal') {
+        var formCard = document.getElementById('formCard');
+        var formPaypal = document.getElementById('formPaypal');
+        if(formCard) formCard.style.display = 'none';
+        if(formPaypal) formPaypal.style.display = 'block';
+    }
+});
+
+// 3. Controlar el botón de PAGAR AHORA
+document.addEventListener('click', function(e) {
+    // Si el usuario hace clic en el botón de pagar
+    if (e.target.id === 'paySubmitBtn') {
+        e.preventDefault();
+        
+        var formContainer = document.getElementById('checkoutFormContainer');
+        var successMsg = document.getElementById('checkoutSuccess');
+        
+        // Ocultar formulario y mostrar mensaje de validado
+        if (formContainer) formContainer.style.display = 'none';
+        if (successMsg) successMsg.style.display = 'block';
+        
+        // Vaciar el carrito
+        if(window.CARRITO) {
+            window.CARRITO.clear();
+            window.CARRITO.renderModal();
+        }
+        
+        // Cerrar la ventana tras 5 segundos
+        setTimeout(function() {
+            var checkoutModal = document.getElementById('checkoutModal');
+            if(checkoutModal) checkoutModal.classList.remove('active');
+        }, 5000);
+    }
+    
+    // Si el usuario hace clic en la X de cerrar la pasarela
+    if (e.target.id === 'checkoutClose') {
+        var checkoutModal = document.getElementById('checkoutModal');
+        if(checkoutModal) checkoutModal.classList.remove('active');
+    }
+});

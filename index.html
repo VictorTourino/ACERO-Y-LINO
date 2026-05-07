@@ -333,62 +333,7 @@
         else{window.addEventListener("load",onLoad)}
     })();
     </script>
-    <script>
-        function abrirPasarela() {
-            document.getElementById('cartModal').classList.remove('active');
-            var ck = document.getElementById('checkoutModal');
-            ck.classList.add('active');
-            document.getElementById('checkoutFormContainer').style.display = 'block';
-            document.getElementById('checkoutSuccess').style.display = 'none';
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            // Welcome Popup
-            var welcomeModal = document.getElementById('welcomePopupModal');
-            if (!sessionStorage.getItem('welcomePopupShown')) {
-                setTimeout(() => { if(welcomeModal) welcomeModal.classList.add('active'); sessionStorage.setItem('welcomePopupShown', 'true'); }, 1500);
-            }
-            document.getElementById('welcomePopupClose').onclick = () => welcomeModal.classList.remove('active');
-
-            // Comunidad
-            var communityItems = document.querySelectorAll('.community-item');
-            if(communityItems.length > 0) {
-                var currentCommIndex = 0;
-                setInterval(() => {
-                    communityItems.forEach((item, index) => {
-                        item.className = 'community-item';
-                        if (index === currentCommIndex) item.classList.add('active');
-                        else if (index === (currentCommIndex - 1 + communityItems.length) % communityItems.length) item.classList.add('prev');
-                        else if (index === (currentCommIndex + 1) % communityItems.length) item.classList.add('next');
-                    });
-                    currentCommIndex = (currentCommIndex + 1) % communityItems.length;
-                }, 3000);
-            }
-        });
-
-    // Al cargar la página, verificamos si ya hay favoritos guardados
-    document.addEventListener('DOMContentLoaded', function() {
-        window.FAVORITOS.updateBadge();
-        
-        var favBtn = document.getElementById('favBtn');
-        var favModal = document.getElementById('favModal');
-        var favClose = document.getElementById('favClose');
-        var addToFavBtn = document.getElementById('addToFavBtn');
-
-        if(favBtn && favModal) {
-            favBtn.addEventListener('click', function() {
-                window.FAVORITOS.renderModal();
-                favModal.classList.add('active');
-            });
-        }
-
-        if(favClose) {
-            favClose.addEventListener('click', function() {
-                favModal.classList.remove('active');
-            });
-        }
-    });
-    </script>
+    
 
     <script>
         window.FAVORITOS = {
