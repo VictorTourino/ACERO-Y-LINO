@@ -25,6 +25,11 @@
                     <img src="imagenes/corazon.png" alt="Favoritos">
                     <span class="fav-badge" id="favBadge" style="display: none;">0</span>
                 </div>
+                <img src="imagenes/usuario.png" alt="Usuario" id="userBtn">
+                <div class="cart-wrapper">
+                    <img src="imagenes/carrito.png" alt="Carrito" id="cartBtn">
+                    <span class="cart-badge" id="cartBadge">0</span>
+                </div>
                 <div class="hamburger-container">
                     <div class="hamburger" id="hamburger">
                         <img src="imagenes/hamburguesa.png" alt="Menu">
@@ -268,13 +273,13 @@
             <p>&copy; 2026 Acero y Lino. Todos los derechos reservados.</p>
         </div>
     </footer>
-    <script src="scriptado.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script>
         (function(){ emailjs.init("LTN7YEhJohhjCwtau"); })();
-    </script>
+        </script>
     <script src="productos-data.js"></script>
     <script src="shared.js"></script>
+    <script src="scriptado.js"></script>
     <script>document.addEventListener('DOMContentLoaded', function() { if (window.initSharedUI) initSharedUI(); });</script>
     <script>
         function abrirPasarela() {
