@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Blog de Acero y Lino - Articulos sobre recreacion medieval, LARP y artesania">
     <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/styles.css"> <!-- AÑADIDO EL CSS PRINCIPAL -->
     <link rel="stylesheet" href="css/subpages.css">
     <link rel="shortcut icon" href="imagenes/fondo-favicon(32x32).png" type="image/x-icon">
 </head>
@@ -165,7 +166,7 @@
             <h3>NEWSLETTER</h3>
             <p style="font-family:'MedievalSharp',cursive;text-align:center;margin-bottom:15px;font-size:14px;">Suscribete para recibir las ultimas novedades y ofertas exclusivas.</p>
             <input type="email" id="newsletterEmail" placeholder="Tu correo electronico..." autocomplete="email">
-            <button id="newsletterSubmit" class="login-btn" style="margin-top:15px;">SUSCRIBIRSE</button>
+            <button id="newsletterSubmit" class="login-btn" style="margin-top:15px; width: 100%;">SUSCRIBIRSE</button>
             <p id="newsletterMsg" style="font-family:'MedievalSharp',cursive;font-size:13px;text-align:center;margin-top:10px;min-height:18px;"></p>
         </div>
     </div>
@@ -277,15 +278,12 @@
     <script>document.addEventListener('DOMContentLoaded', function() { if (window.initSharedUI) initSharedUI(); });</script>
     <script>
         function abrirPasarela() {
-            // Cerramos el carrito si está abierto
             var cartModal = document.getElementById('cartModal');
             if(cartModal) cartModal.classList.remove('active');
             
-            // Mostramos la pasarela
             var checkoutModal = document.getElementById('checkoutModal');
             if(checkoutModal) {
                 checkoutModal.classList.add('active');
-                // Reseteamos las vistas por si el usuario entra varias veces
                 document.getElementById('checkoutFormContainer').style.display = 'block';
                 document.getElementById('checkoutSuccess').style.display = 'none';
             }
@@ -301,14 +299,12 @@
             var formCard = document.getElementById('formCard');
             var formPaypal = document.getElementById('formPaypal');
 
-            // Cerrar el modal con la X
             if(checkoutClose) {
                 checkoutClose.addEventListener('click', function() {
                     checkoutModal.classList.remove('active');
                 });
             }
 
-            // Alternar entre Tarjeta y PayPal
             if(radioCard && radioPaypal) {
                 radioCard.addEventListener('change', function() {
                     formCard.style.display = 'block';
@@ -320,33 +316,27 @@
                 });
             }
 
-            // Simular el pago exitoso al darle a PAGAR AHORA
             if(paySubmitBtn) {
                 paySubmitBtn.addEventListener('click', function() {
-                    // Ocultar formulario y mostrar mensaje de éxito
                     document.getElementById('checkoutFormContainer').style.display = 'none';
                     document.getElementById('checkoutSuccess').style.display = 'block';
 
-                    // Vaciar el carrito de verdad usando tu objeto global CARRITO
                     if(window.CARRITO) {
                         window.CARRITO.clear();
                         window.CARRITO.renderModal();
                     }
 
-                    // Cerrar la ventana automáticamente tras 5 segundos
                     setTimeout(function() {
                         checkoutModal.classList.remove('active');
                     }, 5000);
                 });
             }
 
-            // Cerrar clicando fuera del recuadro
             window.addEventListener('click', function(e) {
                 if (e.target === checkoutModal) {
                     checkoutModal.classList.remove('active');
                 }
             });
-            // Cerrar con la tecla Escape
             window.addEventListener('keydown', function(e) {
                 if(e.key === 'Escape' && checkoutModal && checkoutModal.classList.contains('active')) {
                     checkoutModal.classList.remove('active');
@@ -358,10 +348,9 @@
     <script>
 (function(){
     if(!window.chatbase||window.chatbase("getState")!=="initialized"){
-        // Hemos cambiado 'arguments' por 'args' aquí
         window.chatbase=(...args)=>{
             if(!window.chatbase.q){window.chatbase.q=[]}
-            window.chatbase.q.push(args) // Y aquí
+            window.chatbase.q.push(args) 
         };
         window.chatbase=new Proxy(window.chatbase,{
             get(target,prop){
@@ -384,22 +373,20 @@
 
     <script>
         window.FAVORITOS = {
-    // Extraemos las IDs y las forzamos a ser Texto
     items: (function() {
         var guardados = JSON.parse(localStorage.getItem('mis_favoritos')) || [];
         return guardados.map(item => typeof item === 'object' ? String(item.id) : String(item)).filter(Boolean);
     })(),
 
-    // --- 1. NUEVO: Función para actualizar el globito rojo ---
     updateBadge: function() {
         var badge = document.getElementById('favBadge');
         if(badge) {
             var total = this.items.length;
             if(total > 0) {
                 badge.textContent = total;
-                badge.style.display = 'flex'; // Muestra el número
+                badge.style.display = 'flex'; 
             } else {
-                badge.style.display = 'none'; // Oculta el globito si hay 0
+                badge.style.display = 'none'; 
             }
         }
     },
@@ -424,7 +411,7 @@
         if(!this.items.includes(id)) {
             this.items.push(id);
             this.save();
-            this.updateBadge(); // --- 2. NUEVO: Actualiza al añadir ---
+            this.updateBadge(); 
             this.showNotification('¡Añadido a favoritos!');
         } else {
             this.showNotification('Este artículo ya está en favoritos');
@@ -436,7 +423,7 @@
         this.items = this.items.filter(itemId => itemId !== id);
         this.save();
         this.renderModal();
-        this.updateBadge(); // --- 3. NUEVO: Actualiza al quitar ---
+        this.updateBadge(); 
     },
     
     save: function() {
@@ -510,7 +497,6 @@
             }
         });
         document.addEventListener('DOMContentLoaded', function() {
-    // Al cargar la página, le decimos que pinte el número actual
         if(window.FAVORITOS) {
             window.FAVORITOS.updateBadge();
         }
