@@ -152,7 +152,31 @@ window.CARRITO = {
             }
         };
 
-        if (totalEl) totalEl.textContent = this.getTotal().toFixed(2);
+        // === NUEVO CÁLCULO DE ENVÍO Y DISEÑO ===
+        var totalContainer = document.querySelector('#cartModal .cart-total-row');
+        if (totalContainer) {
+            var subtotal = this.getTotal();
+            var envio = 5.00; // <--- AQUÍ CAMBIAS EL PRECIO DEL ENVÍO
+            var totalFinal = subtotal + envio;
+            
+            // Forzamos por JS que las líneas se pongan una debajo de la otra
+            totalContainer.style.display = 'flex';
+            totalContainer.style.flexDirection = 'column';
+            totalContainer.style.width = '100%';
+            
+            // Inyectamos el desglose visual directamente al HTML
+            totalContainer.innerHTML = 
+                '<div style="display:flex; justify-content:space-between; font-size:14px; color:#666; margin-bottom:8px;">' +
+                    '<span>Subtotal:</span><span>' + subtotal.toFixed(2) + ' &euro;</span>' +
+                '</div>' +
+                '<div style="display:flex; justify-content:space-between; font-size:14px; color:#666; border-bottom:1px solid rgba(131, 7, 45, 0.2); padding-bottom:10px; margin-bottom:10px;">' +
+                    '<span>Gastos de envío:</span><span>' + envio.toFixed(2) + ' &euro;</span>' +
+                '</div>' +
+                '<div style="display:flex; justify-content:space-between; font-weight:bold; font-size:18px; color:var(--wine);">' +
+                    '<span>TOTAL FINAL:</span><span>' + totalFinal.toFixed(2) + ' &euro;</span>' +
+                '</div>';
+        }
+        // =======================================
     }
 };
 // ========================================================
