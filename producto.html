@@ -513,88 +513,103 @@
 
 <script>
         window.FAVORITOS = {
-            // Extraemos las IDs y las forzamos a ser Texto para evitar problemas
-            items: (function() {
-                var guardados = JSON.parse(localStorage.getItem('mis_favoritos')) || [];
-                return guardados.map(item => typeof item === 'object' ? String(item.id) : String(item)).filter(Boolean);
-            })(),
-            
-            showNotification: function(msg) {
-                var existing = document.querySelector('.cart-notification');
-                if (existing) existing.remove();
-                var notif = document.createElement('div');
-                notif.className = 'cart-notification';
-                notif.textContent = msg;
-                document.body.appendChild(notif);
-                setTimeout(function() { notif.classList.add('show'); }, 10);
-                setTimeout(function() {
-                    notif.classList.remove('show');
-                    setTimeout(function() { notif.remove(); }, 300);
-                }, 2000);
-            },
+    // Extraemos las IDs y las forzamos a ser Texto
+    items: (function() {
+        var guardados = JSON.parse(localStorage.getItem('mis_favoritos')) || [];
+        return guardados.map(item => typeof item === 'object' ? String(item.id) : String(item)).filter(Boolean);
+    })(),
 
-            add: function(id) {
-                if(!id) return;
-                id = String(id); // Forzamos que sea texto
-                if(!this.items.includes(id)) {
-                    this.items.push(id);
-                    this.save();
-                    this.showNotification('¡Añadido a favoritos!');
-                } else {
-                    this.showNotification('Este artículo ya está en favoritos');
-                }
-            },
-            
-            remove: function(id) {
-                id = String(id);
-                this.items = this.items.filter(itemId => itemId !== id);
-                this.save();
-                this.renderModal();
-            },
-            
-            save: function() {
-                localStorage.setItem('mis_favoritos', JSON.stringify(this.items));
-            },
-            
-            renderModal: function() {
-                const container = document.getElementById('favItems');
-                const emptyMsg = document.getElementById('favEmpty');
-                if(!container) return;
-
-                container.innerHTML = '';
-                
-                if(this.items.length === 0) {
-                    emptyMsg.style.display = 'block';
-                } else {
-                    emptyMsg.style.display = 'none';
-                    
-                    this.items.forEach(id => {
-                        if (!window.PRODUCTOS) return;
-                        
-                        // EL TRUCO MÁGICO: Comparamos forzando ambos a texto String()
-                        const prod = window.PRODUCTOS.find(p => String(p.id) === String(id));
-                        if (!prod) return; 
-
-                        const div = document.createElement('div');
-                        div.style.display = 'flex';
-                        div.style.alignItems = 'center';
-                        div.style.borderBottom = '1px solid rgba(131, 7, 45, 0.2)';
-                        div.style.padding = '15px 0';
-                        
-                        div.innerHTML = `
-                            <img src="${prod.imagen}" onerror="this.src='imagenes/placeholder-producto.svg'" style="width: 60px; height: 60px; object-fit: cover; margin-right: 15px; border-radius: 5px; border: 1px solid var(--gold);">
-                            <div style="flex: 1; text-align: left;">
-                                <h4 style="margin: 0 0 5px; font-family: 'Metamorphous', cursive; font-size: 15px; color: var(--wine);">${prod.nombre}</h4>
-                                <p style="margin: 0; font-family: 'MedievalSharp', cursive; font-size: 14px;">${prod.precio} &euro;</p>
-                            </div>
-                            <a href="producto.html?id=${prod.id}" style="margin-right: 15px; font-size: 13px; color: var(--wine); text-decoration: underline; font-family: 'Metamorphous', cursive;">Ver</a>
-                            <button onclick="window.FAVORITOS.remove('${prod.id}')" style="background: none; border: none; color: #cc0000; font-size: 24px; cursor: pointer;" title="Eliminar">&times;</button>
-                        `;
-                        container.appendChild(div);
-                    });
-                }
+    // --- 1. NUEVO: Función para actualizar el globito rojo ---
+    updateBadge: function() {
+        var badge = document.getElementById('favBadge');
+        if(badge) {
+            var total = this.items.length;
+            if(total > 0) {
+                badge.textContent = total;
+                badge.style.display = 'flex'; // Muestra el número
+            } else {
+                badge.style.display = 'none'; // Oculta el globito si hay 0
             }
-        };
+        }
+    },
+
+    showNotification: function(msg) {
+        var existing = document.querySelector('.cart-notification');
+        if (existing) existing.remove();
+        var notif = document.createElement('div');
+        notif.className = 'cart-notification';
+        notif.textContent = msg;
+        document.body.appendChild(notif);
+        setTimeout(function() { notif.classList.add('show'); }, 10);
+        setTimeout(function() {
+            notif.classList.remove('show');
+            setTimeout(function() { notif.remove(); }, 300);
+        }, 2000);
+    },
+
+    add: function(id) {
+        if(!id) return;
+        id = String(id);
+        if(!this.items.includes(id)) {
+            this.items.push(id);
+            this.save();
+            this.updateBadge(); // --- 2. NUEVO: Actualiza al añadir ---
+            this.showNotification('¡Añadido a favoritos!');
+        } else {
+            this.showNotification('Este artículo ya está en favoritos');
+        }
+    },
+    
+    remove: function(id) {
+        id = String(id);
+        this.items = this.items.filter(itemId => itemId !== id);
+        this.save();
+        this.renderModal();
+        this.updateBadge(); // --- 3. NUEVO: Actualiza al quitar ---
+    },
+    
+    save: function() {
+        localStorage.setItem('mis_favoritos', JSON.stringify(this.items));
+    },
+    
+    renderModal: function() {
+        const container = document.getElementById('favItems');
+        const emptyMsg = document.getElementById('favEmpty');
+        if(!container) return;
+
+        container.innerHTML = '';
+        
+        if(this.items.length === 0) {
+            emptyMsg.style.display = 'block';
+        } else {
+            emptyMsg.style.display = 'none';
+            
+            this.items.forEach(id => {
+                if (!window.PRODUCTOS) return;
+                
+                const prod = window.PRODUCTOS.find(p => String(p.id) === String(id));
+                if (!prod) return; 
+
+                const div = document.createElement('div');
+                div.style.display = 'flex';
+                div.style.alignItems = 'center';
+                div.style.borderBottom = '1px solid rgba(131, 7, 45, 0.2)';
+                div.style.padding = '15px 0';
+                
+                div.innerHTML = `
+                    <img src="${prod.imagen}" onerror="this.src='imagenes/placeholder-producto.svg'" style="width: 60px; height: 60px; object-fit: cover; margin-right: 15px; border-radius: 5px; border: 1px solid var(--gold);">
+                    <div style="flex: 1; text-align: left;">
+                        <h4 style="margin: 0 0 5px; font-family: 'Metamorphous', cursive; font-size: 15px; color: var(--wine);">${prod.nombre}</h4>
+                        <p style="margin: 0; font-family: 'MedievalSharp', cursive; font-size: 14px;">${prod.precio} &euro;</p>
+                    </div>
+                    <a href="producto.html?id=${prod.id}" style="margin-right: 15px; font-size: 13px; color: var(--wine); text-decoration: underline; font-family: 'Metamorphous', cursive;">Ver</a>
+                    <button onclick="window.FAVORITOS.remove('${prod.id}')" style="background: none; border: none; color: #cc0000; font-size: 24px; cursor: pointer;" title="Eliminar">&times;</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+    }
+};
 
         document.addEventListener('click', function(e) {
             if (e.target.closest('#addToFavBtn')) {
@@ -622,6 +637,12 @@
             if (e.target === favModal) {
                 favModal.classList.remove('active');
             }
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+    // Al cargar la página, le decimos que pinte el número actual
+        if(window.FAVORITOS) {
+            window.FAVORITOS.updateBadge();
+        }
         });
 
         window.addEventListener('keydown', function(e) {
