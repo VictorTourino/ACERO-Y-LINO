@@ -153,32 +153,47 @@ window.CARRITO = {
         };
 
         // === NUEVO CÁLCULO DE ENVÍO Y DISEÑO ===
-        var totalContainer = document.querySelector('#cartModal .cart-total-row');
-        if (totalContainer) {
-            var subtotal = this.getTotal();
-            var envio = 5.00; // <--- AQUÍ CAMBIAS EL PRECIO DEL ENVÍO
-            var totalFinal = subtotal + envio;
+        // Calculamos los números
+        var subtotal = this.getTotal();
+        var envio = subtotal > 0 ? 5.00 : 0; // Si no hay productos, 0€ de envío
+        var totalFinal = subtotal + envio;
+
+        // Actualizamos el número del HTML original
+        if (totalEl) totalEl.textContent = totalFinal.toFixed(2);
+
+        // Buscamos el contenedor donde están los botones y el total
+        var cartActions = document.getElementById('cartActions');
+        if (cartActions) {
+            // Primero, borramos inyecciones viejas por si acaso (para no duplicar al sumar más cosas)
+            var viejosDesgloses = cartActions.querySelectorAll('.desglose-envio');
+            viejosDesgloses.forEach(function(el) { el.remove(); });
+
+            // Buscamos la fila original del "TOTAL:"
+            var totalRow = cartActions.querySelector('.cart-total-row:not(.desglose-envio)');
             
-            // Forzamos por JS que las líneas se pongan una debajo de la otra
-            totalContainer.style.display = 'flex';
-            totalContainer.style.flexDirection = 'column';
-            totalContainer.style.width = '100%';
-            
-            // Inyectamos el desglose visual directamente al HTML
-            totalContainer.innerHTML = 
-                '<div style="display:flex; justify-content:space-between; font-size:14px; color:#666; margin-bottom:8px;">' +
-                    '<span>Subtotal:</span><span>' + subtotal.toFixed(2) + ' &euro;</span>' +
-                '</div>' +
-                '<div style="display:flex; justify-content:space-between; font-size:14px; color:#666; border-bottom:1px solid rgba(131, 7, 45, 0.2); padding-bottom:10px; margin-bottom:10px;">' +
-                    '<span>Gastos de envío:</span><span>' + envio.toFixed(2) + ' &euro;</span>' +
-                '</div>' +
-                '<div style="display:flex; justify-content:space-between; font-weight:bold; font-size:18px; color:var(--wine);">' +
-                    '<span>TOTAL FINAL:</span><span>' + totalFinal.toFixed(2) + ' &euro;</span>' +
-                '</div>';
+            if (totalRow && subtotal > 0) {
+                // Le cambiamos el texto a "TOTAL FINAL:"
+                var label = totalRow.querySelector('.cart-total-label');
+                if (label) label.textContent = 'TOTAL FINAL:';
+
+                // Creamos el HTML del subtotal y envío usando tus clases CSS originales
+                var desgloseHTML = 
+                    '<div class="cart-total-row desglose-envio" style="border-bottom: none; margin-bottom: 5px;">' +
+                        '<span class="cart-total-label">Subtotal:</span>' +
+                        '<span class="cart-total-amount">' + subtotal.toFixed(2) + ' &euro;</span>' +
+                    '</div>' +
+                    '<div class="cart-total-row desglose-envio" style="border-bottom: 1px solid rgba(131, 7, 45, 0.2); padding-bottom: 10px; margin-bottom: 10px;">' +
+                        '<span class="cart-total-label">Gastos de envío:</span>' +
+                        '<span class="cart-total-amount">' + envio.toFixed(2) + ' &euro;</span>' +
+                    '</div>';
+                
+                // Lo insertamos justo antes de la fila del TOTAL FINAL
+                totalRow.insertAdjacentHTML('beforebegin', desgloseHTML);
+            }
         }
+    } // <--- Cierre de la función renderModal
+}; // <--- Cierre del objeto CARRITO
         // =======================================
-    }
-};
 // ========================================================
 // ========== SISTEMA GLOBAL DE FAVORITOS =================
 // ========================================================
