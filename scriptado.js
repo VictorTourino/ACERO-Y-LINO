@@ -477,4 +477,98 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // ========================================================
+    // ========== WELCOME POPUP (Descuento 1ª Compra) =========
+    // ========================================================
+    var welcomePopup = document.getElementById('welcomePopupModal');
+    var welcomePopupClose = document.getElementById('welcomePopupClose');
+    var popupSubmit = document.getElementById('popupSubmit');
+
+    if (welcomePopup) {
+        // Usamos sessionStorage para que el popup solo salte 1 vez por visita
+        if (!sessionStorage.getItem('popupMostrado')) {
+            setTimeout(function() {
+                welcomePopup.classList.add('active');
+                sessionStorage.setItem('popupMostrado', 'true');
+            }, 1500); // Aparece 1.5 segundos después de entrar a la web
+        }
+
+        // Cerrar al hacer clic en la X
+        if (welcomePopupClose) {
+            welcomePopupClose.addEventListener('click', function() {
+                welcomePopup.classList.remove('active');
+            });
+        }
+
+        // Cerrar al hacer clic en el fondo negro
+        welcomePopup.addEventListener('click', function(e) {
+            if (e.target === welcomePopup) {
+                welcomePopup.classList.remove('active');
+            }
+        });
+
+        // Simular el envío del formulario del popup
+        if (popupSubmit) {
+            popupSubmit.addEventListener('click', function() {
+                var email = document.getElementById('popupEmail').value;
+                var priv = document.getElementById('popupPrivacy').checked;
+                var msg = document.getElementById('popupMsg');
+
+                if (!email || !priv) {
+                    msg.style.color = '#cc0000';
+                    msg.textContent = 'Introduce tu email y acepta la privacidad.';
+                } else {
+                    msg.style.color = '#2d8a4e';
+                    msg.textContent = '¡Descuento enviado a tu correo!';
+                    setTimeout(function() {
+                        welcomePopup.classList.remove('active');
+                    }, 2000);
+                }
+            });
+        }
+    }
+
+
+    // ========================================================
+    // ========== CARRUSEL 3D COMUNIDAD (Instagram) ===========
+    // ========================================================
+    var communityCarousel = document.getElementById('communityCarousel');
+    if (communityCarousel) {
+        var communityItems = communityCarousel.querySelectorAll('.community-item');
+        var currentCommunityIndex = 0;
+
+        function updateCommunityCarousel() {
+            if (communityItems.length === 0) return;
+
+            // Calculamos cuál es la foto anterior y la siguiente
+            var prevIndex = (currentCommunityIndex - 1 + communityItems.length) % communityItems.length;
+            var nextIndex = (currentCommunityIndex + 1) % communityItems.length;
+
+            // Recorremos todas las fotos para asignarles la posición correcta
+            for (var i = 0; i < communityItems.length; i++) {
+                // Quitar todas las clases primero
+                communityItems[i].className = 'community-item';
+
+                if (i === currentCommunityIndex) {
+                    communityItems[i].classList.add('active');
+                } else if (i === prevIndex) {
+                    communityItems[i].classList.add('prev');
+                } else if (i === nextIndex) {
+                    communityItems[i].classList.add('next');
+                } else {
+                    // Si hay más de 3 fotos, las demás se ocultan al fondo
+                    communityItems[i].classList.add('hidden-right');
+                }
+            }
+        }
+
+        // Iniciar el carrusel la primera vez
+        updateCommunityCarousel();
+
+        // Hacer que rote automáticamente cada 3 segundos (3000 milisegundos)
+        setInterval(function() {
+            currentCommunityIndex = (currentCommunityIndex + 1) % communityItems.length;
+            updateCommunityCarousel();
+        }, 3000);
+    }
 });
